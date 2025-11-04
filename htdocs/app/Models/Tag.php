@@ -2,19 +2,19 @@
 
 namespace App\Models;
 
-class Type
+class Tag
 {
     public ?int $id;
     public string $name;
-    public string $text;
+    public string $description;
 
     public function __construct(
         ?int $id,
         string $name,
-        string $text
+        string $description
     ) {
         $this->id = $id;
         $this->name = $name;
-        $this->text = $text;
+        $this->description = $description;
     }
 }
