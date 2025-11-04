@@ -1,1 +1,0 @@
-# Projeto de CRUD: lista de tarefas com prazo, categoria e tags
