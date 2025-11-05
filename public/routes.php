@@ -2,7 +2,7 @@
 
 use App\Controllers\Admin\AdminController;
 use App\Controllers\Admin\CategoryController;
-use App\Controllers\Admin\ProductController;
+use App\Controllers\Admin\TaskController;
 use App\Controllers\Admin\UserController;
 use App\Controllers\AuthController;
 use App\Controllers\SiteController;
@@ -31,13 +31,13 @@ $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $rou
 
         // Tarefas
         $group->addGroup('/tasks', function (FastRoute\RouteCollector $tasks) {
-            $tasks->addRoute('GET', '', [ProductController::class, 'index']);
-            $tasks->addRoute('GET', '/create', [ProductController::class, 'create']);
-            $tasks->addRoute('POST', '/store', [ProductController::class, 'store']);
-            $tasks->addRoute('GET', '/show', [ProductController::class, 'show']);
-            $tasks->addRoute('GET', '/edit', [ProductController::class, 'edit']);
-            $tasks->addRoute('POST', '/update', [ProductController::class, 'update']);
-            $tasks->addRoute('POST', '/delete', [ProductController::class, 'delete']);
+            $tasks->addRoute('GET', '', [TaskController::class, 'index']);
+            $tasks->addRoute('GET', '/create', [TaskController::class, 'create']);
+            $tasks->addRoute('POST', '/store', [TaskController::class, 'store']);
+            $tasks->addRoute('GET', '/show', [TaskController::class, 'show']);
+            $tasks->addRoute('GET', '/edit', [TaskController::class, 'edit']);
+            $tasks->addRoute('POST', '/update', [TaskController::class, 'update']);
+            $tasks->addRoute('POST', '/delete', [TaskController::class, 'delete']);
         });
 
         // Categorias

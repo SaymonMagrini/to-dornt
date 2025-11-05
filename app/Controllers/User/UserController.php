@@ -3,10 +3,10 @@ namespace App\Controllers\Admin;
 
 use App\Core\Csrf;
 use App\Core\View;
-use App\Repositories\ProductRepository;
+use App\Repositories\TaskRepository;
 use App\Repositories\UserRepository;
 use App\Services\AuthService;
-use App\Services\ProductService;
+use App\Services\TaskService;
 use App\Services\UserService;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;

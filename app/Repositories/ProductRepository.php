@@ -22,7 +22,7 @@ class ProductRepository {
         $stmt = Database::getConnection()->prepare("SELECT * FROM products WHERE id = ?");
         $stmt->execute([$id]);
         $row = $stmt->fetch();
-        return $row ?: null;
+        return $row ?: [];
     }
     public function create(Product $p): int {
         $stmt = Database::getConnection()->prepare("INSERT INTO products (name, price, image_path) VALUES (?, ?, ?)");
