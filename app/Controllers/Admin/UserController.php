@@ -1,5 +1,5 @@
 <?php
-namespace App\Controllers\Admin;
+namespace App\Controllers\User;
 
 use App\Core\Csrf;
 use App\Core\View;
@@ -106,5 +106,27 @@ class UserController {
         $id = (int)$request->request->get('id', 0);
         if ($id > 0) $this->repo->delete($id);
         return new RedirectResponse('/admin/users');
+    }
+}
+
+namespace App\Controllers\User;
+
+use App\Core\View;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+
+class AdminController
+{
+    private View $view;
+
+    public function __construct()
+    {
+        $this->view = new View();
+    }
+
+    public function index(Request $request): Response
+    {
+        $html = $this->view->render('admin/index');
+        return new Response($html);
     }
 }
