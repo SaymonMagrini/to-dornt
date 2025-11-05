@@ -1,5 +1,5 @@
 <?php
-namespace App\Controllers\Admin;
+namespace App\Controllers\User;
 
 use App\Core\Csrf;
 use App\Core\View;
@@ -9,7 +9,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class ProductController {
+class TaskController {
     private View $view;
     private TaskRepository $repo;
     private TaskService $service;
@@ -52,7 +52,7 @@ class ProductController {
     public function show(Request $request): Response {
         $id = (int)$request->query->get('id', 0);
         $task = $this->repo->find($id);
-        if (!$task) return new Response('Produto não encontrado', 404);
+        if (!$task) return new Response('Tarefa não encontrada', 404);
         $html = $this->view->render('admin/tasks/show', ['task' => $task]);
         return new Response($html);
     }
@@ -60,7 +60,7 @@ class ProductController {
     public function edit(Request $request): Response {
         $id = (int)$request->query->get('id', 0);
         $task = $this->repo->find($id);
-        if (!$task) return new Response('Produto não encontrado', 404);
+        if (!$task) return new Response('Tarefa não encontrada', 404);
         $html = $this->view->render('admin/tasks/edit', ['task' => $task, 'csrf' => Csrf::token(), 'errors' => []]);
         return new Response($html);
     }

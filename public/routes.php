@@ -29,7 +29,6 @@ $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $rou
             $admin->addRoute('GET', '', [AdminController::class, 'index']);
         });
 
-<<<<<<< HEAD
         // Tarefas
         $group->addGroup('/tasks', function (FastRoute\RouteCollector $tasks) {
             $tasks->addRoute('GET', '', [TaskController::class, 'index']);
@@ -39,7 +38,6 @@ $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $rou
             $tasks->addRoute('GET', '/edit', [TaskController::class, 'edit']);
             $tasks->addRoute('POST', '/update', [TaskController::class, 'update']);
             $tasks->addRoute('POST', '/delete', [TaskController::class, 'delete']);
-=======
         });
 
         // Categorias
