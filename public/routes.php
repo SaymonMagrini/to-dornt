@@ -1,9 +1,8 @@
 <?php
 
-use App\Controllers\Admin\AdminController;
-use App\Controllers\Admin\CategoryController;
-use App\Controllers\Admin\TaskController;
-use App\Controllers\Admin\UserController;
+use App\Controllers\User\UserController;
+use App\Controllers\User\CategoryController;
+use App\Controllers\User\TaskController;
 use App\Controllers\AuthController;
 use App\Controllers\SiteController;
 use App\Middleware\AuthMiddleware;
@@ -23,10 +22,10 @@ $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $rou
         $auth->addRoute('POST', '/logout', [AuthController::class, 'logout']);
     });
 
-    $routeCollector->addGroup('/admin', function (FastRoute\RouteCollector $group) {
-        // Home Admin
-        $group->addGroup('', function (FastRoute\RouteCollector $admin) {
-            $admin->addRoute('GET', '', [AdminController::class, 'index']);
+    $routeCollector->addGroup('/user', function (FastRoute\RouteCollector $group) {
+        // Home User
+        $group->addGroup('', function (FastRoute\RouteCollector $user) {
+            $user->addRoute('GET', '', [UserController::class, 'index']);
         });
 
         // Tarefas
@@ -87,7 +86,7 @@ switch ($routeInfo[0]) {
 
         // Módulos protegidos
         $protectedRoutes = [
-            '/admin',
+            '/user',
         ];
 
         // Se a rota começar com alguma dessas, exige login
