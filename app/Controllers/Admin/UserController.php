@@ -34,22 +34,30 @@ class UserController {
     }
 
     public function create(): Response {
-        $html = $this->view->render('admin/users/create', ['csrf' => Csrf::token(), 'errors' => []]);
+        $html = $this->view->render('admin/users/create', [
+            'csrf' => Csrf::token(),
+            'errors' => []
+        ]);
         return new Response($html);
     }
 
     public function store(Request $request): Response {
         if (!Csrf::validate($request->request->get('_csrf')))
             return new Response('Token CSRF inválido', 419);
-        $errors = $this->service->validate($request->request->all());
 
+        $errors = $this->service->validate($request->request->all());
         $emailExists = $this->repo->findByEmail($request->get('email'));
-        if($emailExists){
+
+        if ($emailExists) {
             $errors['email'] = "E-mail já utilizado.";
         }
 
         if ($errors) {
-            $html = $this->view->render('admin/users/create', ['csrf' => Csrf::token(), 'errors' => $errors, 'old' => $request->request->all()]);
+            $html = $this->view->render('admin/users/create', [
+                'csrf' => Csrf::token(),
+                'errors' => $errors,
+                'old' => $request->request->all()
+            ]);
             return new Response($html, 422);
         }
 
@@ -63,69 +71,88 @@ class UserController {
     public function show(Request $request): Response {
         $id = (int)$request->query->get('id', 0);
         $user = $this->repo->find($id);
-        if (!$user) return new Response('Usuário não encontrado', 404);
+
+        if (!$user) {
+            return new Response('Usuário não encontrado', 404);
+        }
+
         $html = $this->view->render('admin/users/show', ['user' => $user]);
         return new Response($html);
     }
 
     public function edit(Request $request): Response {
         $id = (int)$request->query->get('id', 0);
-        $product = $this->repo->find($id);
-        if (!$product) return new Response('Usuário não encontrado', 404);
-        $html = $this->view->render('admin/users/edit', ['product' => $product, 'csrf' => Csrf::token(), 'errors' => []]);
+        $user = $this->repo->find($id);
+
+        if (!$user) {
+            return new Response('Usuário não encontrado', 404);
+        }
+
+        $html = $this->view->render('admin/users/edit', [
+            'user' => $user,
+            'csrf' => Csrf::token(),
+            'errors' => []
+        ]);
         return new Response($html);
     }
 
     public function update(Request $request): Response {
-        if (!Csrf::validate($request->request->get('_csrf'))) return new Response('Token CSRF inválido', 419);
+        if (!Csrf::validate($request->request->get('_csrf')))
+            return new Response('Token CSRF inválido', 419);
+
         $data = $request->request->all();
         $errors = $this->service->validate($data);
 
         $emailExists = $this->repo->findByEmailNotId($request->get('email'), $data['id']);
-        if($emailExists){
+        if ($emailExists) {
             $errors['email'] = "E-mail já utilizado.";
         }
 
         if ($errors) {
-            $html = $this->view->render('admin/users/edit', ['product' => array_merge($this->repo->find((int)$data['id']), $data), 'csrf' => Csrf::token(), 'errors' => $errors]);
+            $html = $this->view->render('admin/users/edit', [
+                'user' => array_merge($this->repo->find((int)$data['id']), $data),
+                'csrf' => Csrf::token(),
+                'errors' => $errors
+            ]);
             return new Response($html, 422);
         }
 
-        $product = $this->service->make($data);
-        if (!$product->id) return new Response('ID inválido', 422);
-        $this->repo->update($product);
-        return new RedirectResponse('/admin/users/show?id=' . $product->id);
+        $user = $this->service->make($data);
+        if (!$user->id) {
+            return new Response('ID inválido', 422);
+        }
+
+        $this->repo->update($user);
+        return new RedirectResponse('/admin/users/show?id=' . $user->id);
     }
 
     public function delete(Request $request): Response {
         $total = $this->repo->countAll();
-        if($total === 1){
-            return new Response('Token CSRF inválido', 419);
+        if ($total === 1) {
+            return new Response('Não é possível excluir o último usuário', 419);
         }
-        if (!Csrf::validate($request->request->get('_csrf'))) return new Response('Token CSRF inválido', 419);
+
+        if (!Csrf::validate($request->request->get('_csrf')))
+            return new Response('Token CSRF inválido', 419);
+
         $id = (int)$request->request->get('id', 0);
-        if ($id > 0) $this->repo->delete($id);
+        if ($id > 0) {
+            $this->repo->delete($id);
+        }
+
         return new RedirectResponse('/admin/users');
     }
 }
 
-namespace App\Controllers\User;
 
-use App\Core\View;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-
-class AdminController
-{
+class AdminController {
     private View $view;
 
-    public function __construct()
-    {
+    public function __construct() {
         $this->view = new View();
     }
 
-    public function index(Request $request): Response
-    {
+    public function index(Request $request): Response {
         $html = $this->view->render('admin/index');
         return new Response($html);
     }
