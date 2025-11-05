@@ -3,12 +3,17 @@ require_once "conexao.php";
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $username = trim($_POST["username"] ?? "");
     $senha = trim($_POST["senha"] ?? $_POST["password"] ?? "");
+    $email = trim($_POST["email"] ?? "");
     if (empty($username)) {
         echo "O campo Usuário está vazio.";
         exit;
     }
     if (empty($senha)) {
         echo "O campo Senha está vazio.";
+        exit;
+    }
+    if (empty($email)) {
+        echo "O campo Email está vazio.";
         exit;
     }
 
