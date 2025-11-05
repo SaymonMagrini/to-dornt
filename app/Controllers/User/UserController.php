@@ -29,12 +29,12 @@ class UserController {
         $total = $this->repo->countAll();
         $users = $this->repo->paginate($page, $perPage);
         $pages = (int)ceil($total / $perPage);
-        $html = $this->view->render('admin/users/index', compact('users','page','pages'));
+        $html = $this->view->render('users/index', compact('users','page','pages'));
         return new Response($html);
     }
 
     public function create(): Response {
-        $html = $this->view->render('admin/users/create', [
+        $html = $this->view->render('users/create', [
             'csrf' => Csrf::token(),
             'errors' => []
         ]);
@@ -53,7 +53,7 @@ class UserController {
         }
 
         if ($errors) {
-            $html = $this->view->render('admin/users/create', [
+            $html = $this->view->render('users/create', [
                 'csrf' => Csrf::token(),
                 'errors' => $errors,
                 'old' => $request->request->all()
@@ -65,7 +65,7 @@ class UserController {
         $user->password_hash = AuthService::hashPassword($user->password_hash);
         $id = $this->repo->create($user);
 
-        return new RedirectResponse('/admin/users/show?id=' . $id);
+        return new RedirectResponse('/users/show?id=' . $id);
     }
 
     public function show(Request $request): Response {
@@ -76,7 +76,7 @@ class UserController {
             return new Response('Usuário não encontrado', 404);
         }
 
-        $html = $this->view->render('admin/users/show', ['user' => $user]);
+        $html = $this->view->render('users/show', ['user' => $user]);
         return new Response($html);
     }
 
@@ -88,7 +88,7 @@ class UserController {
             return new Response('Usuário não encontrado', 404);
         }
 
-        $html = $this->view->render('admin/users/edit', [
+        $html = $this->view->render('users/edit', [
             'user' => $user,
             'csrf' => Csrf::token(),
             'errors' => []
@@ -109,7 +109,7 @@ class UserController {
         }
 
         if ($errors) {
-            $html = $this->view->render('admin/users/edit', [
+            $html = $this->view->render('users/edit', [
                 'user' => array_merge($this->repo->find((int)$data['id']), $data),
                 'csrf' => Csrf::token(),
                 'errors' => $errors
@@ -123,7 +123,7 @@ class UserController {
         }
 
         $this->repo->update($user);
-        return new RedirectResponse('/admin/users/show?id=' . $user->id);
+        return new RedirectResponse('/users/show?id=' . $user->id);
     }
 
     public function delete(Request $request): Response {
@@ -140,20 +140,6 @@ class UserController {
             $this->repo->delete($id);
         }
 
-        return new RedirectResponse('/admin/users');
-    }
-}
-
-
-class AdminController {
-    private View $view;
-
-    public function __construct() {
-        $this->view = new View();
-    }
-
-    public function index(Request $request): Response {
-        $html = $this->view->render('admin/index');
-        return new Response($html);
+        return new RedirectResponse('/users');
     }
 }
