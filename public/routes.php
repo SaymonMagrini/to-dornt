@@ -9,6 +9,7 @@ use App\Middleware\AuthMiddleware;
 use Symfony\Component\HttpFoundation\Request;
 
 $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $routeCollector) {
+   
     // Index Site
     $routeCollector->addGroup('/', function (FastRoute\RouteCollector $site) {
         $site->addRoute('GET', '', [SiteController::class, 'index']);
@@ -40,7 +41,7 @@ $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $rou
         });
 
         // Categorias
-        $group->addGroup('/categories', function (FastRoute\RouteCollector $categories) {
+        $group->addGroup('/User/categories', function (FastRoute\RouteCollector $categories) {
             $categories->addRoute('GET', '', [CategoryController::class, 'index']);
             $categories->addRoute('GET', '/create', [CategoryController::class, 'create']);
             $categories->addRoute('POST', '/store', [CategoryController::class, 'store']);
@@ -50,13 +51,25 @@ $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $rou
             $categories->addRoute('POST', '/delete', [CategoryController::class, 'delete']);
         });
 
+        // Tags
+        $group->addGroup('/User/tags', function (FastRoute\RouteCollector $tags) {
+            $tags->addRoute('GET', '', [CategoryController::class, 'index']);
+            $tags->addRoute('GET', '/create', [CategoryController::class, 'create']);
+            $tags->addRoute('POST', '/store', [CategoryController::class, 'store']);
+            $tags->addRoute('GET', '/show', [CategoryController::class, 'show']);
+            $tags->addRoute('GET', '/edit', [CategoryController::class, 'edit']);
+            $tags->addRoute('POST', '/update', [CategoryController::class, 'update']);
+            $tags->addRoute('POST', '/delete', [CategoryController::class, 'delete']);
+        });
+
+
         // Usuários
         $group->addGroup('/users', function (FastRoute\RouteCollector $users) {
             $users->addRoute('GET', '', [UserController::class, 'index']);
             $users->addRoute('GET', '/create', [UserController::class, 'create']);
             $users->addRoute('POST', '/store', [UserController::class, 'store']);
             $users->addRoute('GET', '/show', [UserController::class, 'show']);
-//            $users->addRoute('GET', '/edit', [UserController::class, 'edit']);
+            //            $users->addRoute('GET', '/edit', [UserController::class, 'edit']);
 //            $users->addRoute('POST', '/update', [UserController::class, 'update']);
             $users->addRoute('POST', '/delete', [UserController::class, 'delete']);
         });
@@ -65,7 +78,8 @@ $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $rou
 
 $httpMethod = $_SERVER['REQUEST_METHOD'];
 $uri = $_SERVER['REQUEST_URI'];
-if (false !== $pos = strpos($uri, '?')) $uri = substr($uri, 0, $pos);
+if (false !== $pos = strpos($uri, '?'))
+    $uri = substr($uri, 0, $pos);
 $uri = rawurldecode($uri);
 
 $routeInfo = $dispatcher->dispatch($httpMethod, $uri);
@@ -93,7 +107,10 @@ switch ($routeInfo[0]) {
         foreach ($protectedRoutes as $prefix) {
             if (str_starts_with($uri, $prefix)) {
                 $redirect = AuthMiddleware::requireLogin();
-                if ($redirect) { $redirect->send(); exit; }
+                if ($redirect) {
+                    $redirect->send();
+                    exit;
+                }
                 break;
             }
         }
