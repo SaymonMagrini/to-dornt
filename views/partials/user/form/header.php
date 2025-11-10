@@ -1,6 +1,15 @@
-<div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
-    <h5 class="mb-0 fw-semibold" id="formTitle"><?= $title ?></h5>
-    <button onclick="history.back()" class="btn btn-secondary" id="btnCancelForm">
-        <i class="bi bi-arrow-left"></i> Voltar
-    </button>
-</div>
+<!DOCTYPE html>
+<html>
+<header>
+    <div class="header">
+        <a href="index.php" class="header__itm">Página inicial</a>
+        <a href="view.php" class="header__itm">Ver tarefas</a>
+        <a href="create.php" class="header__itm">Cadastrar tarefas</a>
+        <a href="edit.php" class="header__itm">Editar tarefas</a>
+        <a href="delete.php" class="header__itm">Remover tarefas</a>
+        <a href="login.php" class="header__itm">login</a>
+    </div>
+
+</header>
+
+</html>
