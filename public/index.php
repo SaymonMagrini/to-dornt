@@ -4,12 +4,12 @@ require_once __DIR__ . '/../vendor/autoload.php';
 use App\Core\View;
 use App\Services\AuthService;
 
-$auth = new AuthService();
+$user = AuthService::user(); 
 
-if (!$auth->check()) {
+if (!$user) {
     header('Location: /login.php');
     exit;
 }
 
 $view = new View();
-echo $view->render('home');
+echo $view->render('home', ['user' => $user]);
