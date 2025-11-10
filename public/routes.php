@@ -24,7 +24,7 @@ $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $rou
     });
 
     $routeCollector->addGroup('/user', function (FastRoute\RouteCollector $group) {
-        // Home User
+        // Dashboard
         $group->addGroup('', function (FastRoute\RouteCollector $user) {
             $user->addRoute('GET', '', [UserController::class, 'index']);
         });
