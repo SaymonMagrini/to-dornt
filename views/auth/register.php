@@ -3,29 +3,33 @@
 <head>
   <meta charset="UTF-8">
   <title>Cadastro</title>
+  <link rel="stylesheet" href="/beta/assets/style.css">
 </head>
 <body>
-  <h2>Criar Conta</h2>
 
-  <?php foreach (\App\Core\Flash::getAll() as $msg): ?>
-    <p style="color: red;"><?= htmlspecialchars($msg['message']) ?></p>
-  <?php endforeach; ?>
+  <div class="header">
+    <a href="/login" class="header__itm">Login</a>
+    <a href="/register" class="header__itm">Registrar</a>
+  </div>
 
-  <form method="POST" action="/register.php">
-    <input type="hidden" name="_csrf" value="<?= htmlspecialchars($csrf) ?>">
+  <div class="container">
+    <h2 class="titulo">Criar Conta</h2>
 
-    <label>Nome:</label><br>
-    <input type="text" name="name" required><br><br>
+    <?php foreach (\App\Core\Flash::getAll() as $msg): ?>
+      <p style="color: red;"><?= htmlspecialchars($msg['message']) ?></p>
+    <?php endforeach; ?>
 
-    <label>Email:</label><br>
-    <input type="email" name="email" required><br><br>
+    <form method="POST" action="/register.php" class="form-tarefa">
+      <input type="hidden" name="_csrf" value="<?= htmlspecialchars($csrf) ?>">
 
-    <label>Senha:</label><br>
-    <input type="password" name="password" required><br><br>
+      <input type="text" name="name" placeholder="Nome" required class="input-texto">
+      <input type="email" name="email" placeholder="E-mail" required class="input-texto">
+      <input type="password" name="password" placeholder="Senha" required class="input-texto">
 
-    <button type="submit">Cadastrar</button>
-  </form>
+      <button type="submit" class="btn">Cadastrar</button>
+    </form>
 
-  <p>Já tem conta? <a href="/login.php">Fazer login</a></p>
+    <p>Já tem conta? <a href="/login.php" style="color:#00ffff;">Fazer login</a></p>
+  </div>
 </body>
 </html>
