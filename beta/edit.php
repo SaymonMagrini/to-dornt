@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
-    txt 
+
 <?php include 'partials/header.php'; ?>
 
 <?php include 'partials/footer.php'; ?>

@@ -2,12 +2,12 @@
 require_once __DIR__ . '/../vendor/autoload.php';
 
 use App\Controllers\AuthController;
+use Symfony\Component\HttpFoundation\Request;
 
-
+$request = Request::createFromGlobals();
 $controller = new AuthController();
 
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+if ($request->getMethod() === 'POST') {
     $controller->register();
 } else {
     $controller->showRegister();
