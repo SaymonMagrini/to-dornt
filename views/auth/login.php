@@ -3,26 +3,31 @@
 <head>
   <meta charset="UTF-8">
   <title>Login</title>
+  <link rel="stylesheet" href="/beta/assets/style.css">
 </head>
 <body>
-  <h2>Login</h2>
 
-  <?php foreach (\App\Core\Flash::getAll() as $msg): ?>
-    <p style="color: red;"><?= htmlspecialchars($msg['message']) ?></p>
-  <?php endforeach; ?>
+  <div class="header">
+    <span class="header__itm">Login</span>
+  </div>
 
-  <form method="POST" action="/login.php">
-    <input type="hidden" name="_csrf" value="<?= htmlspecialchars($csrf) ?>">
+  <div class="login-container">
+    <?php
+    use App\Core\Flash;
+    foreach (Flash::getAll() as $msg): ?>
+      <p style="color:<?= $msg['type']==='danger'?'red':'#00ffff' ?>;">
+        <?= htmlspecialchars($msg['message']) ?>
+      </p>
+    <?php endforeach; ?>
 
-    <label>Email:</label><br>
-    <input type="email" name="email" required><br><br>
+    <form method="POST" action="/auth/login">
+      <input type="hidden" name="_csrf" value="<?= htmlspecialchars($csrf ?? '') ?>">
 
-    <label>Senha:</label><br>
-    <input type="password" name="password" required><br><br>
+      <input type="email" name="email" placeholder="E-mail" required class="input-texto">
+      <input type="password" name="password" placeholder="Senha" required class="input-texto">
 
-    <button type="submit">Entrar</button>
-  </form>
-
-  <p>Não tem conta? <a href="/register.php">Cadastre-se</a></p>
+      <button type="submit" class="btn">Entrar</button>
+    </form>
+  </div>
 </body>
 </html>
