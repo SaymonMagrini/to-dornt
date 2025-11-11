@@ -11,7 +11,7 @@ class CategoryRepository
     public function countAll(): int
     {
         $stmt = Database::getConnection()->query("SELECT COUNT(*) FROM categories");
-        return (int)$stmt->fetchColumn();
+        return (int) $stmt->fetchColumn();
     }
 
     public function paginate(int $page, int $perPage): array
@@ -34,15 +34,15 @@ class CategoryRepository
 
     public function create(Category $category): int
     {
-        $stmt = Database::getConnection()->prepare("INSERT INTO categories (name, text) VALUES (?, ?)");
-        $stmt->execute([$category->name, $category->text]);
-        return (int)Database::getConnection()->lastInsertId();
+        $stmt = Database::getConnection()->prepare("INSERT INTO categories (name, description) VALUES (?, ?)");
+        $stmt->execute([$category->name, $category->description]);
+        return (int) Database::getConnection()->lastInsertId();
     }
 
     public function update(Category $category): bool
     {
-        $stmt = Database::getConnection()->prepare("UPDATE categories SET name = ?, text = ? WHERE id = ?");
-        return $stmt->execute([$category->name, $category->text, $category->id]);
+        $stmt = Database::getConnection()->prepare("UPDATE categories SET name = ?, description = ? WHERE id = ?");
+        return $stmt->execute([$category->name, $category->description, $category->id]);
     }
 
     public function delete(int $id): bool
