@@ -110,4 +110,4 @@
       <button type="submit" class="btn">Entrar</button>
     </form>
 
-    <p>Não tem conta? <a href="/register.php">Cada
+    <p>Não tem conta? <a href="/register.php">Registre-se aqui</a></p>
