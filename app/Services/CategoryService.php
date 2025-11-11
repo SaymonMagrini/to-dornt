@@ -15,8 +15,8 @@ class CategoryService {
 
     public function make(array $data): Category {
         $name = trim($data['name'] ?? '');
-        $text = trim($data['text'] ?? '');
+        $description = trim($data['description'] ?? '');
         $id = isset($data['id']) ? (int)$data['id'] : null;
-        return new Category($id, $name, $text);
+        return new Category($id, $name, $description);
     }
 }

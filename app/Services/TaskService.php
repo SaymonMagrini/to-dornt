@@ -4,7 +4,7 @@ namespace App\Services;
 use App\Models\Product;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
-class ProductService {
+class TaskService {
     public function validate(array $data, ?UploadedFile $file = null): array {
         $errors = [];
         $name = trim($data['name'] ?? '');
