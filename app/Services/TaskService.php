@@ -41,7 +41,7 @@ class TaskService
             ? trim($data['due_to'])
             : null;
 
-        $isCompleted = isset($data['done'])
+        $done = isset($data['done'])
             ? (bool) $data['done']
             : false;
 
@@ -52,7 +52,7 @@ class TaskService
             $title,
             $description,
             $dueTo,
-            $isCompleted,
+            $done,
             $createdAt
         );
     }
