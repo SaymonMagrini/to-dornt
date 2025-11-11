@@ -23,10 +23,10 @@ class TaskRepository
         return $stmt->fetchAll();
     }
 
-    public function create(int $userId, string $title): int
+    public function create(int $userId, string $title, $categoryId, $tags): int
     {
         $stmt = Database::getConnection()->prepare("INSERT INTO tasks (user_id, title, done) VALUES (?, ?, 0)");
-        $stmt->execute([$userId, $title]);
+        $stmt->execute([$userId, $title, $categoryId, $tags]);
         return (int)Database::getConnection()->lastInsertId();
     }
 
