@@ -5,20 +5,55 @@ use App\Models\Task;
 
 class TaskService
 {
-    public function validate(array $data, ): array
+    public function validate(array $data): array
     {
         $errors = [];
-        $title = trim($data['name'] ?? '');
 
-        if ($title === '')
-            $errors['name'] = 'Nome é obrigatório';
+        $title = trim($data['title'] ?? '');
+        if ($title === '') {
+            $errors['title'] = 'Título é obrigatório';
+        }
+
+        if (!empty($data['due_to'])) {
+            $dueTo = trim($data['due_to']);
+            if (strtotime($dueTo) === false) {
+                $errors['due_to'] = 'Data de entrega inválida';
+            }
+        }
+
+        if (
+            isset($data['done'])
+            && !in_array($data['done'], [true, false, 0, 1, '0', '1'], true)
+        ) {
+            $errors['done'] = 'Valor inválido para done';
+        }
 
         return $errors;
     }
-    public function make(array $data, ?string $imagePath = null): Task
+
+    public function make(array $data): Task
     {
-        $title = trim($data['name'] ?? '');
         $id = isset($data['id']) ? (int) $data['id'] : null;
-        return new Task($id, $title, , );
+
+        $title = trim($data['title'] ?? '');
+        $description = isset($data['description']) ? trim($data['description']) : null;
+        $dueTo = isset($data['due_to']) && trim($data['due_to']) !== ''
+            ? trim($data['due_to'])
+            : null;
+
+        $isCompleted = isset($data['done'])
+            ? (bool) $data['done']
+            : false;
+
+        $createdAt = $data['created_at'] ?? '';
+
+        return new Task(
+            $id,
+            $title,
+            $description,
+            $dueTo,
+            $isCompleted,
+            $createdAt
+        );
     }
 }
