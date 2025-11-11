@@ -6,7 +6,7 @@ class Category
 {
     public ?int $id;
     public string $name;
-    public string $text;
+    public string $description;
 
     public function __construct(
         ?int $id,
