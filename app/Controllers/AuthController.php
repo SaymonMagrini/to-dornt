@@ -2,59 +2,105 @@
 
 namespace App\Controllers;
 
-use App\Core\Csrf;
-use App\Core\Flash;
 use App\Core\View;
-use App\Repositories\UserRepository;
-use App\Services\AuthService;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
+use App\Core\Flash;
+use App\Core\Database;
+use App\Services\UserService;
+use PDO;
 
 class AuthController
 {
     private View $view;
-    private UserRepository $repo;
+    private UserService $userService;
 
-    private AuthService $auth;
-
-    public function __construct(){
+    public function __construct()
+    {
         $this->view = new View();
-        $this->auth = new AuthService();
+        $this->userService = new UserService();
     }
 
-    function showLogin(): Response
+    public function showLogin(): void
     {
-        $html = $this->view->render('auth/login', ['csrf' => Csrf::token()]);
-        return new Response($html);
+        echo $this->view->render('auth/login', []);
     }
 
-    public function login(Request $req): Response
+    public function login(): void
     {
-        if (!Csrf::validate($req->request->get('_csrf'))) return new Response('CSRF inválido', 419);
-        $email = (string)$req->request->get('email', '');
-        $password = (string)$req->request->get('password', '');
+        $email = trim($_POST['email'] ?? '');
+        $password = trim($_POST['password'] ?? '');
 
-        if (!$this->auth->attempt($email, $password)) {
-            Flash::push('danger', 'Credenciais inválidas');
-            return new RedirectResponse('/auth/login');
+        if ($email === '' || $password === '') {
+            Flash::add('Preencha todos os campos', 'error');
+            header('Location: /login.php');
+            exit;
         }
 
-        Flash::push('success', 'Bem-vindo!');
-        return new RedirectResponse('/admin');
+        $pdo = Database::getConnection();
+        $stmt = $pdo->prepare('SELECT * FROM users WHERE email = ?');
+        $stmt->execute([$email]);
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$user || !password_verify($password, $user['password_hash'])) {
+            Flash::add('Usuário ou senha incorretos', 'error');
+            header('Location: /login.php');
+            exit;
+        }
+
+        session_start();
+        $_SESSION['user'] = [
+            'id' => $user['id'],
+            'name' => $user['name'],
+            'email' => $user['email']
+        ];
+
+        Flash::add('Login realizado com sucesso!', 'success');
+        header('Location: /home.php');
+        exit;
     }
 
-    public function logout(): Response
+    public function showRegister(): void
     {
-        $this->auth->logout();
-        Flash::push('info', 'Sessão encerrada.');
-        return new RedirectResponse('/auth/login');
+        echo $this->view->render('auth/register', []);
     }
 
-    public function create(): Response
+    public function register(): void
     {
-        $id = $this->auth->register('Teste', 'teste@teste.com', 'teste123');
-        Flash::push('info', 'Admin criado #' . $id);
-        return new RedirectResponse('/auth/login');
+        $name = trim($_POST['name'] ?? '');
+        $email = trim($_POST['email'] ?? '');
+        $password = trim($_POST['password'] ?? '');
+
+        if ($name === '' || $email === '' || $password === '') {
+            Flash::add('Preencha todos os campos', 'error');
+            header('Location: /register.php');
+            exit;
+        }
+
+        $pdo = Database::getConnection();
+        $stmt = $pdo->prepare('SELECT id FROM users WHERE email = ?');
+        $stmt->execute([$email]);
+
+        if ($stmt->fetch()) {
+            Flash::add('E-mail já cadastrado', 'error');
+            header('Location: /register.php');
+            exit;
+        }
+
+        $hash = password_hash($password, PASSWORD_DEFAULT);
+        $stmt = $pdo->prepare('INSERT INTO users (name, email, password_hash) VALUES (?, ?, ?)');
+        $stmt->execute([$name, $email, $hash]);
+
+        Flash::add('Cadastro realizado com sucesso! Faça login.', 'success');
+        header('Location: /login.php');
+        exit;
+    }
+
+    public function logout(): void
+    {
+        session_start();
+        session_destroy();
+
+        Flash::add('Você saiu da conta.', 'info');
+        header('Location: /login.php');
+        exit;
     }
 }
