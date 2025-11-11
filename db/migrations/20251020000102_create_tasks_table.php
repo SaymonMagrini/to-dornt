@@ -13,7 +13,7 @@ final class CreateTasksTable extends AbstractMigration
             ->addColumn('name', 'string', ['limit' => 64])
             ->addColumn('description', 'string', ['limit' => 256])
             ->addColumn('due_date', 'date', ['null' => true])
-            ->addColumn('is_completed', 'boolean', ['default' => false])
+            ->addColumn('done', 'boolean', ['default' => false])
             ->addColumn('created_at', 'timestamp', ['default' => 'CURRENT_TIMESTAMP'])
             
             ->addForeignKey('user_id', 'users', 'id', ['delete' => 'CASCADE'])

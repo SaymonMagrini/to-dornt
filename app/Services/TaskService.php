@@ -22,10 +22,10 @@ class TaskService
         }
 
         if (
-            isset($data['is_completed'])
-            && !in_array($data['is_completed'], [true, false, 0, 1, '0', '1'], true)
+            isset($data['done'])
+            && !in_array($data['done'], [true, false, 0, 1, '0', '1'], true)
         ) {
-            $errors['is_completed'] = 'Valor inválido para is_completed';
+            $errors['done'] = 'Valor inválido para done';
         }
 
         return $errors;
@@ -41,8 +41,8 @@ class TaskService
             ? trim($data['due_to'])
             : null;
 
-        $isCompleted = isset($data['is_completed'])
-            ? (bool) $data['is_completed']
+        $isCompleted = isset($data['done'])
+            ? (bool) $data['done']
             : false;
 
         $createdAt = $data['created_at'] ?? '';
