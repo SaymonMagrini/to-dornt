@@ -8,7 +8,7 @@
 </head>
 
 <body>
-    txt
+
     <?php include 'partials/header.php'; ?>
 
     <?php

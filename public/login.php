@@ -8,9 +8,7 @@ $request = Request::createFromGlobals();
 $controller = new AuthController();
 
 if ($request->getMethod() === 'POST') {
-    $response = $controller->login($request);
+    $controller->login();
 } else {
-    $response = $controller->showLogin();
+    $controller->showLogin();
 }
-
-$response->send();

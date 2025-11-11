@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Cadastro</title>
+  <title>Registrar</title>
   <style>
     body {
       background-color: #0C0C0C;
@@ -97,23 +97,21 @@
   </div>
 
   <div class="container">
-    <h2 class="titulo">Criar Conta</h2>
+    <h2 class="titulo">Crie sua conta</h2>
+    <p class="subtitulo" style="text-align:center;">Preencha os dados abaixo para se cadastrar.</p>
 
     <?php foreach (\App\Core\Flash::getAll() as $msg): ?>
       <p style="color: red;"><?= htmlspecialchars($msg['message']) ?></p>
     <?php endforeach; ?>
 
     <form method="POST" action="/register.php">
-      <input type="hidden" name="_csrf" value="<?= htmlspecialchars($csrf) ?>">
-
-      <input type="text" name="name" placeholder="Nome" required class="input-texto">
+      <input type="text" name="name" placeholder="Nome completo" required class="input-texto">
       <input type="email" name="email" placeholder="E-mail" required class="input-texto">
       <input type="password" name="password" placeholder="Senha" required class="input-texto">
-
       <button type="submit" class="btn">Cadastrar</button>
     </form>
 
-    <p>Já tem conta? <a href="/login.php">Fazer login</a></p>
+    <p>Já tem uma conta? <a href="/login.php">Faça login</a></p>
   </div>
 </body>
 </html>
