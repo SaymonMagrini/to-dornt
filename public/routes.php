@@ -2,6 +2,7 @@
 
 use App\Controllers\User\UserController;
 use App\Controllers\User\CategoryController;
+use App\Controllers\User\TagController;
 use App\Controllers\User\TaskController;
 use App\Controllers\AuthController;
 use App\Controllers\SiteController;
@@ -9,7 +10,7 @@ use App\Middleware\AuthMiddleware;
 use Symfony\Component\HttpFoundation\Request;
 
 $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $routeCollector) {
-   
+
     // Index Site
     $routeCollector->addGroup('/', function (FastRoute\RouteCollector $site) {
         $site->addRoute('GET', '', [SiteController::class, 'index']);
@@ -53,13 +54,13 @@ $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $rou
 
         // Tags
         $group->addGroup('/User/tags', function (FastRoute\RouteCollector $tags) {
-            $tags->addRoute('GET', '', [CategoryController::class, 'index']);
-            $tags->addRoute('GET', '/create', [CategoryController::class, 'create']);
-            $tags->addRoute('POST', '/store', [CategoryController::class, 'store']);
-            $tags->addRoute('GET', '/show', [CategoryController::class, 'show']);
-            $tags->addRoute('GET', '/edit', [CategoryController::class, 'edit']);
-            $tags->addRoute('POST', '/update', [CategoryController::class, 'update']);
-            $tags->addRoute('POST', '/delete', [CategoryController::class, 'delete']);
+            $tags->addRoute('GET', '', [TagController::class, 'index']);
+            $tags->addRoute('GET', '/create', [TagController::class, 'create']);
+            $tags->addRoute('POST', '/store', [TagController::class, 'store']);
+            $tags->addRoute('GET', '/show', [TagController::class, 'show']);
+            $tags->addRoute('GET', '/edit', [TagController::class, 'edit']);
+            $tags->addRoute('POST', '/update', [TagController::class, 'update']);
+            $tags->addRoute('POST', '/delete', [TagController::class, 'delete']);
         });
 
 
