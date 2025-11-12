@@ -100,9 +100,8 @@
     <h2 class="titulo">Crie sua conta</h2>
     <p class="subtitulo" style="text-align:center;">Preencha os dados abaixo para se cadastrar.</p>
 
-    <?php foreach (\App\Core\Flash::getAll() as $msg): ?>
-      <p style="color: red;"><?= htmlspecialchars($msg['message']) ?></p>
-    <?php endforeach; ?>
+   
+    <?php \App\Core\Flash::render(); ?>
 
     <form method="POST" action="/register.php">
       <input type="text" name="name" placeholder="Nome completo" required class="input-texto">
