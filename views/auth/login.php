@@ -100,9 +100,7 @@
     <h2 class="titulo">Acesse sua conta</h2>
     <p class="subtitulo" style="text-align:center;">Digite seu e-mail e senha para continuar.</p>
 
-    <?php foreach (\App\Core\Flash::getAll() as $msg): ?>
-      <p style="color: red;"><?= htmlspecialchars($msg['message']) ?></p>
-    <?php endforeach; ?>
+      <?php \App\Core\Flash::render(); ?>
 
     <form method="POST" action="/login.php">
       <input type="email" name="email" placeholder="E-mail" required class="input-texto">
