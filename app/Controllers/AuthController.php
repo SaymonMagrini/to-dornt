@@ -54,7 +54,7 @@ class AuthController
         ];
 
         Flash::add('Login realizado com sucesso!', 'success');
-        header('Location: /home.php');
+        header('Location: /home');
         exit;
     }
 
