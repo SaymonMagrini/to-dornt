@@ -104,10 +104,13 @@
       <p style="color: red;"><?= htmlspecialchars($msg['message']) ?></p>
     <?php endforeach; ?>
 
-    <form method="POST" action="/auth/login">
+    <form method="POST" action="/login.php">
       <input type="email" name="email" placeholder="E-mail" required class="input-texto">
       <input type="password" name="password" placeholder="Senha" required class="input-texto">
       <button type="submit" class="btn">Entrar</button>
     </form>
 
     <p>Não tem conta? <a href="/register.php">Registre-se aqui</a></p>
+  </div>
+</body>
+</html>
