@@ -81,7 +81,7 @@ class AuthController
 
         if ($stmt->fetch()) {
             Flash::add('E-mail já cadastrado', 'error');
-            header('Location: /register.php');
+            header('Location: /register');
             exit;
         }
 
@@ -90,7 +90,7 @@ class AuthController
         $stmt->execute([$name, $email, $hash]);
 
         Flash::add('Cadastro realizado com sucesso! Faça login.', 'success');
-        header('Location: /login.php');
+        header('Location: /login');
         exit;
     }
 
@@ -100,7 +100,7 @@ class AuthController
         session_destroy();
 
         Flash::add('Você saiu da conta.', 'info');
-        header('Location: /login.php');
+        header('Location: /login');
         exit;
     }
 }

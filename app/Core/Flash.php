@@ -31,6 +31,13 @@ class Flash
 
         return $messages;
     }
+    public static function pullAll(): array
+    {
+        Csrf::ensureSession();
+        $all = $_SESSION['_flash'] ?? [];
+        unset($_SESSION['_flash']);
+        return $all;
+    }
 
 
     public static function render(): void
