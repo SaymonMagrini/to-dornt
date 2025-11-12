@@ -1,15 +1,28 @@
 <?php
 require_once __DIR__ . '/../vendor/autoload.php';
 
-use App\Core\View;
-use App\Services\AuthService;
+use App\Controllers\HomeController;
+use App\Controllers\AuthController;
 
-$user = AuthService::user(); 
+$path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
-if (!$user) {
-    header('Location: /login.php');
-    exit;
+
+if ($path === '/' || $path === '/home') {
+    $controller = new HomeController();
+    $controller->index();
+} elseif ($path === '/login') {
+    $controller = new AuthController();
+    $controller->login();
+} elseif ($path === '/register') {
+    $controller = new AuthController();
+    $controller->register();
+} elseif ($path === '/tasks') {
+    $controller = new HomeController(); 
+    $controller->index(); 
+} elseif ($path === '/logout') {
+    $controller = new AuthController();
+    $controller->logout();
+} else {
+    http_response_code(404);
+    echo "Página não encontrada";
 }
-
-$view = new View();
-echo $view->render('home', ['user' => $user]);

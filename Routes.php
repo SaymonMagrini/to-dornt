@@ -1,0 +1,118 @@
+<?php
+use App\Controllers\User\UserController;
+use App\Controllers\CategoryController;
+use App\Controllers\TagController;
+use App\Controllers\TaskController;
+use App\Controllers\AuthController;
+use App\Controllers\HomeController;
+use App\Middleware\AuthMiddleware;
+use Symfony\Component\HttpFoundation\Request;
+
+$dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $routeCollector) {
+    // Index e Home
+    $routeCollector->addRoute('GET', '/', [HomeController::class, 'index']);
+    $routeCollector->addRoute('GET', '/home', [HomeController::class, 'index']);
+
+    // Autenticação
+    $routeCollector->addGroup('/auth', function (FastRoute\RouteCollector $auth) {
+        $auth->addRoute('GET', '/login', [AuthController::class, 'showLogin']);
+        $auth->addRoute('POST', '/login', [AuthController::class, 'login']);
+        $auth->addRoute('GET', '/create', [AuthController::class, 'showRegister']);
+        $auth->addRoute('POST', '/create', [AuthController::class, 'register']);
+        $auth->addRoute('POST', '/logout', [AuthController::class, 'logout']);
+    });
+
+    // Rotas protegidas do usuário
+    $routeCollector->addGroup('/user', function (FastRoute\RouteCollector $group) {
+        // Dashboard
+        $group->addRoute('GET', '', [UserController::class, 'index']);
+
+        // Tarefas
+        $group->addGroup('/task', function (FastRoute\RouteCollector $tasks) {
+            $tasks->addRoute('GET', '', [TaskController::class, 'index']);
+            $tasks->addRoute('GET', '/create', [TaskController::class, 'create']);
+            $tasks->addRoute('POST', '/store', [TaskController::class, 'store']);
+            $tasks->addRoute('GET', '/show', [TaskController::class, 'show']);
+            $tasks->addRoute('GET', '/edit', [TaskController::class, 'edit']);
+            $tasks->addRoute('POST', '/update', [TaskController::class, 'update']);
+            $tasks->addRoute('POST', '/delete', [TaskController::class, 'delete']);
+        });
+
+        // Categorias
+        $group->addGroup('/categories', function (FastRoute\RouteCollector $categories) {
+            $categories->addRoute('GET', '', [CategoryController::class, 'index']);
+            $categories->addRoute('GET', '/create', [CategoryController::class, 'create']);
+            $categories->addRoute('POST', '/store', [CategoryController::class, 'store']);
+            $categories->addRoute('GET', '/show', [CategoryController::class, 'show']);
+            $categories->addRoute('GET', '/edit', [CategoryController::class, 'edit']);
+            $categories->addRoute('POST', '/update', [CategoryController::class, 'update']);
+            $categories->addRoute('POST', '/delete', [CategoryController::class, 'delete']);
+        });
+
+        // Tags
+        $group->addGroup('/tags', function (FastRoute\RouteCollector $tags) {
+            $tags->addRoute('GET', '', [TagController::class, 'index']);
+            $tags->addRoute('GET', '/create', [TagController::class, 'create']);
+            $tags->addRoute('POST', '/store', [TagController::class, 'store']);
+            $tags->addRoute('GET', '/show', [TagController::class, 'show']);
+            $tags->addRoute('GET', '/edit', [TagController::class, 'edit']);
+            $tags->addRoute('POST', '/update', [TagController::class, 'update']);
+            $tags->addRoute('POST', '/delete', [TagController::class, 'delete']);
+        });
+
+        // Usuários
+        $group->addGroup('/users', function (FastRoute\RouteCollector $users) {
+            $users->addRoute('GET', '', [UserController::class, 'index']);
+            $users->addRoute('GET', '/create', [UserController::class, 'create']);
+            $users->addRoute('POST', '/store', [UserController::class, 'store']);
+            $users->addRoute('GET', '/show', [UserController::class, 'show']);
+            $users->addRoute('POST', '/delete', [UserController::class, 'delete']);
+        });
+    });
+});
+
+$httpMethod = $_SERVER['REQUEST_METHOD'];
+$uri = $_SERVER['REQUEST_URI'];
+if (false !== $pos = strpos($uri, '?')) {
+    $uri = substr($uri, 0, $pos);
+}
+$uri = rawurldecode($uri);
+
+$routeInfo = $dispatcher->dispatch($httpMethod, $uri);
+$request = Request::createFromGlobals();
+
+switch ($routeInfo[0]) {
+    case FastRoute\Dispatcher::NOT_FOUND:
+        http_response_code(404);
+        echo '404';
+        break;
+    case FastRoute\Dispatcher::METHOD_NOT_ALLOWED:
+        http_response_code(405);
+        echo '405';
+        break;
+    case FastRoute\Dispatcher::FOUND:
+        [$class, $method] = $routeInfo[1];
+        $controller = new $class();
+
+        // Módulos protegidos
+        $protectedRoutes = [
+            '/user',
+            '/home',
+        ];
+
+        // Se a rota começar com alguma dessas, exige login
+        foreach ($protectedRoutes as $prefix) {
+            if (str_starts_with($uri, $prefix)) {
+                $redirect = AuthMiddleware::requireLogin();
+                if ($redirect) {
+                    $redirect->send();
+                    exit;
+                }
+                break;
+            }
+        }
+
+        $response = $controller->$method($request);
+        $response->send();
+        break;
+}
