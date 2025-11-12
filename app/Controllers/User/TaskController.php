@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 class TaskController
 {
     private TaskRepository $tasks;
-    private CategoryRepository $categories;
+    private CategoryRepository $categoryRepo;
     private AuthService $auth;
     private View $view;
     public function __construct()
@@ -25,10 +25,11 @@ class TaskController
     public function index(): Response
     {
         $user = $this->auth->user();
-        if (!$user) return new RedirectResponse('/auth/login');
+        if (!$user)
+            return new RedirectResponse('/auth/login');
 
         $tasks = $this->tasks->allByUser($user['id']);
-        $categories = $this->categories->all();
+        $categories = $this->categoryRepo->getArray();
 
         $html = $this->view->render('home', [
             'user' => $user,
