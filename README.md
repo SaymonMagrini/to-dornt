@@ -34,4 +34,4 @@ Saymon Kerlon Basso Magrini (sistema da lista de tarefas)
 
 Acesse: localhost:8001/auth/create
 - E-mail: teste@teste.com
-- Senha: teste123
+- Senha: 
