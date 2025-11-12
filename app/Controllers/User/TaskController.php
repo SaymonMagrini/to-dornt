@@ -1,5 +1,6 @@
 <?php
 namespace App\Controllers;
+
 use App\Core\View;
 use App\Repositories\TaskRepository;
 use App\Repositories\CategoryRepository;
@@ -13,11 +14,12 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 class TaskController
 {
     private TaskRepository $repo;
+    private TaskService $service;
     private CategoryRepository $categoryRepo;
     private TagRepository $tagRepo;
-
     private AuthService $auth;
     private View $view;
+
     public function __construct()
     {
         $this->view = new View();
@@ -25,9 +27,8 @@ class TaskController
         $this->service = new TaskService();
         $this->categoryRepo = new CategoryRepository();
         $this->tagRepo = new TagRepository();
-
+        $this->auth = new AuthService();
     }
-
 
     public function index(): Response
     {
@@ -35,13 +36,17 @@ class TaskController
         if (!$user)
             return new RedirectResponse('/auth/login');
 
-        $tasks = $this->tasks->allByUser($user['id']);
+        $tasks = $this->repo->allByUser($user['id']);
         $categories = $this->categoryRepo->getArray();
+        $tags = $this->tagRepo->getArray();
+
 
         $html = $this->view->render('home', [
             'user' => $user,
             'tasks' => $tasks,
-            'categories' => $categories
+            'categories' => $categories,
+            'tags' => $tags
+
         ]);
 
         return new Response($html);
@@ -55,7 +60,7 @@ class TaskController
         $tags = trim($req->request->get('tags', ''));
 
         if ($title !== '') {
-            $this->tasks->create($user['id'], $title, $categoryId, $tags);
+            $this->repo->create($user['id'], $title, $categoryId, $tags);
         }
 
         return new RedirectResponse('/');
@@ -63,13 +68,13 @@ class TaskController
 
     public function toggle(int $id): Response
     {
-        $this->tasks->toggleDone($id);
+        $this->repo->toggleDone($id);
         return new RedirectResponse('/');
     }
 
     public function delete(int $id): Response
     {
-        $this->tasks->delete($id);
+        $this->repo->delete($id);
         return new RedirectResponse('/');
     }
 }

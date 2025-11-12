@@ -31,7 +31,7 @@ $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $rou
         });
 
         // Tarefas
-        $group->addGroup('/tasks', function (FastRoute\RouteCollector $tasks) {
+        $group->addGroup('/task', function (FastRoute\RouteCollector $tasks) {
             $tasks->addRoute('GET', '', [TaskController::class, 'index']);
             $tasks->addRoute('GET', '/create', [TaskController::class, 'create']);
             $tasks->addRoute('POST', '/store', [TaskController::class, 'store']);

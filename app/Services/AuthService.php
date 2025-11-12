@@ -46,4 +46,10 @@ class AuthService
         session_start();
         return $_SESSION['user'] ?? null;
     }
+    public static function hashPassword(string $password): string
+    {
+        $algo = defined('PASSWORD_ARGON2ID') ? PASSWORD_ARGON2ID : PASSWORD_BCRYPT;
+        return password_hash($password, $algo);
+    }
+
 }

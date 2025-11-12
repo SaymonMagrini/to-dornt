@@ -19,7 +19,8 @@ class TagService
     public function make(array $data): Category
     {
         $name = trim($data['name'] ?? '');
+        $description = trim($data['description'] ?? '');
         $id = isset($data['id']) ? (int) $data['id'] : null;
-        return new Category($id, $name);
+        return new Category($id, $name, $description);
     }
 }

@@ -1,5 +1,5 @@
 <?php
-namespace App\Controllers\Admin;
+namespace App\Controllers;
 
 use App\Core\Csrf;
 use App\Core\View;

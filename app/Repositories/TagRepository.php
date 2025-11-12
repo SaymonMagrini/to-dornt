@@ -34,20 +34,31 @@ class TagRepository
 
     public function create(Category $tag): int
     {
-        $stmt = Database::getConnection()->prepare("INSERT INTO tags (name, text) VALUES (?, ?)");
-        $stmt->execute([$tag->name, $tag->text]);
+        $stmt = Database::getConnection()->prepare("INSERT INTO tags (name, description) VALUES (?, ?)");
+        $stmt->execute([$tag->name, $tag->description]);
         return (int)Database::getConnection()->lastInsertId();
     }
 
     public function update(Category $tag): bool
     {
-        $stmt = Database::getConnection()->prepare("UPDATE tags SET name = ?, text = ? WHERE id = ?");
-        return $stmt->execute([$tag->name, $tag->text, $tag->id]);
+        $stmt = Database::getConnection()->prepare("UPDATE tags SET name = ?, description = ? WHERE id = ?");
+        return $stmt->execute([$tag->name, $tag->description, $tag->id]);
     }
 
     public function delete(int $id): bool
     {
         $stmt = Database::getConnection()->prepare("DELETE FROM tags WHERE id = ?");
         return $stmt->execute([$id]);
+    }
+    public function getArray(): array
+    {
+        $stmt = Database::getConnection()->prepare("SELECT * FROM tags ORDER BY id DESC");
+        $stmt->execute();
+        $tags = $stmt->fetchAll();
+        $return = [];
+        foreach ($tags as $tag) {
+            $return[$tag['id']] = $tag['name'];
+        }
+        return $return;
     }
 }

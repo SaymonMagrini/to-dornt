@@ -50,4 +50,15 @@ class CategoryRepository
         $stmt = Database::getConnection()->prepare("DELETE FROM categories WHERE id = ?");
         return $stmt->execute([$id]);
     }
+    public function getArray(): array
+    {
+        $stmt = Database::getConnection()->prepare("SELECT * FROM categories ORDER BY id DESC");
+        $stmt->execute();
+        $categories = $stmt->fetchAll();
+        $return = [];
+        foreach ($categories as $category) {
+            $return[$category['id']] = $category['name'];
+        }
+        return $return;
+    }
 }
