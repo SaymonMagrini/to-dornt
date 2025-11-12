@@ -3,24 +3,31 @@ namespace App\Controllers;
 use App\Core\View;
 use App\Repositories\TaskRepository;
 use App\Repositories\CategoryRepository;
+use App\Repositories\TagRepository;
 use App\Services\AuthService;
+use App\Services\TaskService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class TaskController
 {
-    private TaskRepository $tasks;
+    private TaskRepository $repo;
     private CategoryRepository $categoryRepo;
+    private TagRepository $tagRepo;
+
     private AuthService $auth;
     private View $view;
     public function __construct()
     {
-        $this->tasks = new TaskRepository();
-        $this->categories = new CategoryRepository();
-        $this->auth = new AuthService();
         $this->view = new View();
+        $this->repo = new TaskRepository();
+        $this->service = new TaskService();
+        $this->categoryRepo = new CategoryRepository();
+        $this->tagRepo = new TagRepository();
+
     }
+
 
     public function index(): Response
     {
