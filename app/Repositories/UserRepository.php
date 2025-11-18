@@ -1,50 +1,45 @@
 <?php
-
 namespace App\Repositories;
-
 use App\Core\Database;
 use PDO;
 
-class UserRepository
-{
-    public function findByEmail(string $email): ?array
-    {
-        $stmt = Database::getConnection()->prepare("SELECT * FROM users WHERE email = ?");
+class UserRepository {
+    public function findByEmail(string $email): ?array {
+        $db = Database::getConnection();
+        $stmt = $db->prepare('SELECT * FROM users WHERE email = ? LIMIT 1');
         $stmt->execute([$email]);
-        $user = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $user ?: null;
+        $d = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $d ?: null;
     }
 
-    public function find(int $id): ?array
-    {
-        $stmt = Database::getConnection()->prepare("SELECT * FROM users WHERE id = ?");
+    public function find(int $id): ?array {
+        $db = Database::getConnection();
+        $stmt = $db->prepare('SELECT * FROM users WHERE id = ?');
         $stmt->execute([$id]);
-        $user = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $user ?: null;
+        return $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
     }
 
-    public function create(string $nome, string $email, string $senha): int
-    {
-        $stmt = Database::getConnection()->prepare(
-            "INSERT INTO users (nome, email, senha) VALUES (?, ?, ?)"
-        );
-        $stmt->execute([$nome, $email, $senha]);
-        return (int) Database::getConnection()->lastInsertId();
+    public function all(): array {
+        $db = Database::getConnection();
+        return $db->query('SELECT id,name,email,role,created_at FROM users ORDER BY id DESC')->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function countAll(): int
-    {
-        $stmt = Database::getConnection()->query("SELECT COUNT(*) FROM users");
-        return (int) $stmt->fetchColumn();
-    }
-    public function paginate(int $page, int $perPage): array
-    {
-        $offset = ($page - 1) * $perPage;
-        $stmt = Database::getConnection()->prepare("SELECT * FROM users ORDER BY id DESC LIMIT :limit OFFSET :offset");
-        $stmt->bindValue(':limit', $perPage, \PDO::PARAM_INT);
-        $stmt->bindValue(':offset', $offset, \PDO::PARAM_INT);
-        $stmt->execute();
-        return $stmt->fetchAll();
+    public function create(array $u): int {
+        $db = Database::getConnection();
+        $stmt = $db->prepare('INSERT INTO users (name,email,password,role) VALUES (?,?,?,?)');
+        $stmt->execute([$u['name'],$u['email'],$u['password'],$u['role']]);
+        return (int)$db->lastInsertId();
     }
 
+    public function update(array $u): bool {
+        $db = Database::getConnection();
+        $stmt = $db->prepare('UPDATE users SET name=?,email=?,password=?,role=? WHERE id=?');
+        return $stmt->execute([$u['name'],$u['email'],$u['password'],$u['role'],$u['id']]);
+    }
+
+    public function delete(int $id): bool {
+        $db = Database::getConnection();
+        $stmt = $db->prepare('DELETE FROM users WHERE id = ?');
+        return $stmt->execute([$id]);
+    }
 }

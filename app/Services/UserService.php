@@ -1,30 +1,21 @@
 <?php
-
 namespace App\Services;
 
-use App\Models\User;
-
-class UserService
-{
-    public function validate(array $data): array
-    {
+class UserService {
+    public function validate(array $data, bool $updating = false): array {
         $errors = [];
-        $name = trim($data['name'] ?? '');
-        $email = trim($data['email'] ?? '');
-        $password = trim($data['password'] ?? '');
-
-        if ($name === '') $errors['name'] = 'Nome é obrigatório';
-        if ($email === '') $errors['email'] = 'E-mail é obrigatório';
-        if ($password === '') $errors['password'] = 'Senha é obrigatória';
-
+        if (empty($data['name'])) $errors[] = 'Nome obrigatório';
+        if (empty($data['email'])) $errors[] = 'Email obrigatório';
         return $errors;
     }
 
-    public function make(array $data,): User {
-        $name = trim($data['name'] ?? '');
-        $email = trim($data['email'] ?? '');
-        $password_hash = trim($data['password'] ?? '');
-        $id = isset($data['id']) ? (int)$data['id'] : null;
-        return new User($id, $name, $email, $password_hash);
+    public function make(array $data): object {
+        $u = new \stdClass();
+        $u->id = $data['id'] ?? null;
+        $u->name = trim($data['name'] ?? '');
+        $u->email = trim($data['email'] ?? '');
+        $u->password = $data['password'] ?? null;
+        $u->role = $data['role'] ?? 'user';
+        return $u;
     }
 }
