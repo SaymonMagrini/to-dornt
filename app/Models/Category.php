@@ -6,15 +6,12 @@ class Category
 {
     public ?int $id;
     public string $name;
-    public string $description;
+    public string $text;
 
-    public function __construct(
-        ?int $id,
-        string $name,
-        string $description
-    ) {
+    public function __construct(?int $id, string $name, string $text)
+    {
         $this->id = $id;
         $this->name = $name;
-        $this->description = $description;
+        $this->text = $text;
     }
 }

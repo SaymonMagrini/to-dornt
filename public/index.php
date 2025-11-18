@@ -1,15 +1,14 @@
 <?php
-require_once __DIR__ . '/../vendor/autoload.php';
+declare(strict_types=1);
 
-use App\Core\View;
-use App\Services\AuthService;
+require __DIR__ . '/../vendor/autoload.php';
 
-$user = AuthService::user(); 
+use Dotenv\Dotenv;
 
-if (!$user) {
-    header('Location: /login.php');
-    exit;
+$root = dirname(__DIR__, 2);
+if (file_exists($root . '/.env')) {
+    $dotenv = Dotenv::createImmutable($root);
+    $dotenv->load();
 }
 
-$view = new View();
-echo $view->render('home', ['user' => $user]);
+require_once("routes.php");
