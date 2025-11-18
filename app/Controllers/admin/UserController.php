@@ -41,7 +41,7 @@ class UserController {
         }
         $u = $this->service->make($_POST);
         $u->password = password_hash($_POST['password'] ?? '123456', PASSWORD_DEFAULT);
-        $this->repo->create((array)$u);
+        $this->repo->create($u);
         header('Location: /?p=admin/users'); exit;
     }
 

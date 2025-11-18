@@ -1,9 +1,9 @@
 <?php
 
-use App\Controllers\User\UserController;
-use App\Controllers\CategoryController;
-use App\Controllers\TagController;
-use App\Controllers\TaskController;
+use App\Controllers\admin\UserController;
+use App\Controllers\admin\CategoryController;
+use App\Controllers\admin\TagController;
+use App\Controllers\admin\TaskController;
 use App\Controllers\AuthController;
 use App\Controllers\SiteController;
 use App\Middleware\AuthMiddleware;
