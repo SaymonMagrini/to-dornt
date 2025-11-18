@@ -1,6 +1,7 @@
 # Projeto de CRUD: lista de tarefas com prazo, categoria e tags
 
-Autores:
+# Autores:
+
 Joelinton Siqueira (sistema de login)
 Saymon Kerlon Basso Magrini (sistema da lista de tarefas)
 
@@ -29,9 +30,3 @@ Saymon Kerlon Basso Magrini (sistema da lista de tarefas)
 | Linux: vendor/bin/phinx migrate
 
 | Windows: php vendor/bin/phinx migrate
-
-- Criar primeiro usuário
-
-Acesse: localhost:8001/auth/create
-- E-mail: teste@teste.com
-- Senha: teste123
