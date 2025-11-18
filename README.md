@@ -1,4 +1,15 @@
-- Copiar .env.example para .env
+# Projeto de CRUD: lista de tarefas com prazo, categoria e tags
+
+# Autores:
+
+Joelinton Siqueira (sistema de login)
+Saymon Kerlon Basso Magrini (sistema da lista de tarefas)
+
+# instruções de uso
+
+- Executar o comando `composer install` para instalar as dependências do projeto.
+
+- Copiar `.env.example` para `.env`
 
 - Configurar conexão com banco de dados com variáveis DB_
 
