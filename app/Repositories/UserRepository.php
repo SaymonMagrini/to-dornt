@@ -1,6 +1,10 @@
 <?php
 namespace App\Repositories;
+
 use App\Core\Database;
+use App\Models\User;
+
+
 use PDO;
 
 class UserRepository {
@@ -24,11 +28,11 @@ class UserRepository {
         return $db->query('SELECT id,name,email,role,created_at FROM users ORDER BY id DESC')->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function create(array $u): int {
-        $db = Database::getConnection();
-        $stmt = $db->prepare('INSERT INTO users (name,email,password,role) VALUES (?,?,?,?)');
-        $stmt->execute([$u['name'],$u['email'],$u['password'],$u['role']]);
-        return (int)$db->lastInsertId();
+    public function create(User $u): int
+    {
+        $stmt = Database::getConnection()->prepare("INSERT INTO users (name, email, password_hash) VALUES (?, ?, ?)");
+        $stmt->execute([$u->name, $u->email, $u->password_hash]);
+        return (int)Database::getConnection()->lastInsertId();
     }
 
     public function update(array $u): bool {

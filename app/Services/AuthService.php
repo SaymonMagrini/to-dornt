@@ -12,6 +12,8 @@ class AuthService
         $this->repo = new UserRepository();
     }
 
+    private UserService $service;
+
     public function attempt(string $email, string $senha): bool
     {
         session_start();
@@ -35,10 +37,13 @@ class AuthService
         session_destroy();
     }
 
-    public function register(string $name, string $email, string $senha): int
+    public function register(string $name, string $email, string $password): int
     {
-        $hash = password_hash($senha, PASSWORD_DEFAULT);
-        return $this->repo->create($name, $email, $hash);
+        $data['name'] = $name;
+        $data['email'] = strtolower(trim($email));
+        $data['password'] = AuthService::hashPassword($password);
+        $user = $this->service->make($data);
+        return $this->repo->create($user);
     }
 
     public static function user(): ?array
