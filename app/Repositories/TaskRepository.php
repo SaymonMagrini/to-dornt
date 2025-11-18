@@ -4,17 +4,9 @@ use App\Core\Database;
 use PDO;
 
 class TaskRepository {
-    public function allByUser(int $userId): array {
+    public function all(): array {
         $db = Database::getConnection();
-        $stmt = $db->prepare(
-            'SELECT t.*, GROUP_CONCAT(c.name) AS categories
-             FROM tasks t
-             LEFT JOIN task_categories tc ON tc.task_id = t.id
-             LEFT JOIN categories c ON c.id = tc.category_id
-             WHERE t.user_id = ? GROUP BY t.id ORDER BY t.id DESC'
-        );
-        $stmt->execute([$userId]);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $db->query('SELECT * FROM categories ORDER BY name')->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function create(int $userId, string $title, ?string $description = null): int {

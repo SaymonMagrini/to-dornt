@@ -1,9 +1,9 @@
 <?php
 
 use App\Controllers\admin\UserController;
+use App\Controllers\admin\TaskController;
 use App\Controllers\admin\CategoryController;
 use App\Controllers\admin\TagController;
-use App\Controllers\admin\TaskController;
 use App\Controllers\AuthController;
 use App\Controllers\SiteController;
 use App\Middleware\AuthMiddleware;
@@ -31,7 +31,7 @@ $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $rou
         });
 
         // Tarefas
-        $group->addGroup('/task', function (FastRoute\RouteCollector $tasks) {
+        $group->addGroup('/User/tasks', function (FastRoute\RouteCollector $tasks) {
             $tasks->addRoute('GET', '', [TaskController::class, 'index']);
             $tasks->addRoute('GET', '/create', [TaskController::class, 'create']);
             $tasks->addRoute('POST', '/store', [TaskController::class, 'store']);
