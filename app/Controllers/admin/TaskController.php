@@ -44,6 +44,42 @@ class TaskController
         echo $this->view->render('admin/tasks/index', ['tasks' => $tasks, 'user' => $_SESSION['user']]);
     }
 
+    public function store()
+    {
+        $this->adminAuth();
+        if (!\App\Core\Csrf::validate($_POST['_csrf'] ?? '')) {
+            echo 'CSRF inválido';
+            exit;
+        }
+        $title = trim($_POST['title'] ?? '');
+        if ($title === '') {
+            echo 'Nome obrigatório';
+            exit;
+
+        }
+        $userId = $_POST['user'] ?? null;
+        if ($userId === '') {
+            echo 'Usuário obrigatório';
+            exit;
+        }
+        $categoryId = $_POST['category'] ?? null;
+        if ($categoryId === '') {
+            echo 'Categoria obrigatória';
+            exit;
+        }
+        $description = $_POST['description'] ?? null;
+        if ($description === '') {
+            echo 'Categoria obrigatória';
+            exit;
+        }
+
+
+        $this->repo->create($userId, $categoryId, $title, $description);
+        header('Location: /?p=admin/categories');
+        exit;
+    }
+
+
     public function edit()
     {
         $this->adminAuth();
@@ -52,7 +88,7 @@ class TaskController
         $cats = $this->catRepo->all();
         $tags = $this->tagRepo->all();
         $assigned = $this->tcRepo->getCategoriesForTask($id);
-        echo $this->view->render('admin/tasks/edit', ['task' => $task, 'categories' => $cats, 'tags' =>$tags, 'assigned' => $assigned, 'csrf' => \App\Core\Csrf::token()]);
+        echo $this->view->render('admin/tasks/edit', ['task' => $task, 'categories' => $cats, 'tags' => $tags, 'assigned' => $assigned, 'csrf' => \App\Core\Csrf::token()]);
     }
 
     public function update()

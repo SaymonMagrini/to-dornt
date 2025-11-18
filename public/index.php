@@ -25,19 +25,15 @@ switch ($path) {
         break;
 
     case 'tasks':
-        (new App\Controllers\TaskController())->index();
+        (new App\Controllers\admin\TaskController())->index();
         break;
 
     case 'tasks/store':
-        (new App\Controllers\TaskController())->store();
-        break;
-
-    case 'tasks/toggle':
-        (new App\Controllers\TaskController())->toggle();
+        (new App\Controllers\admin\TaskController())->store();
         break;
 
     case 'tasks/delete':
-        (new App\Controllers\TaskController())->delete();
+        (new App\Controllers\admin\TaskController())->delete();
         break;
 
     // admin
@@ -81,6 +77,25 @@ switch ($path) {
         break;
     case 'admin/categories/delete':
         (new App\Controllers\Admin\CategoryController())->delete();
+        break;
+
+        case 'admin/tags':
+        (new App\Controllers\Admin\TagController())->index();
+        break;
+    case 'admin/tags/create':
+        (new App\Controllers\Admin\TagController())->create();
+        break;
+    case 'admin/tags/store':
+        (new App\Controllers\Admin\TagController())->store();
+        break;
+    case 'admin/tags/edit':
+        (new App\Controllers\Admin\TagController())->edit();
+        break;
+    case 'admin/tags/update':
+        (new App\Controllers\Admin\TagController())->update();
+        break;
+    case 'admin/tags/delete':
+        (new App\Controllers\Admin\TagController())->delete();
         break;
 
     case 'admin/tasks':
