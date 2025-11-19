@@ -18,7 +18,7 @@ class TagController
     private TagRepository $repo;
     private TagService $service;
     private TaskRepository $taskRepo;
-
+    
     public function __construct()
     {
         $this->view = new View();
@@ -27,13 +27,13 @@ class TagController
         $this->taskRepo = new TaskRepository();
     }
 
-    public function index(Request $request, int $userId): Response
+    public function index(Request $request): Response
     {
         $page = max(1, (int)$request->query->get('page', 1));
         $perPage = 5;
 
-        $total = $this->repo->countAll($userId);
-        $tags = $this->repo->paginate($userId, $page, $perPage);
+        $total = $this->repo->countAll();
+        $tags = $this->repo->paginate( $page, $perPage);
         $pages = (int)ceil($total / $perPage);
 
         $html = $this->view->render('admin/tags/index', compact('tags', 'page', 'pages'));

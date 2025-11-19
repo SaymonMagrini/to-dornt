@@ -5,11 +5,17 @@ namespace App\Repositories;
 use App\Core\Database;
 use App\Models\Tag;
 use PDO;
+use App\Repositories\TaskRepository;
+
 
 class TagRepository
 {
-    public function countAll(int $userId): int
+    public TaskRepository $taskRepo;
+
+    public function countAll(): int
     {
+     $userId = $taskRepo->userId ?? 0;
+
         $stmt = Database::getConnection()->prepare(
             "SELECT COUNT(*) FROM tags WHERE user_id = ?"
         );
@@ -17,8 +23,10 @@ class TagRepository
         return (int)$stmt->fetchColumn();
     }
 
-    public function paginate(int $userId, int $page, int $perPage): array
+    public function paginate(int $page, int $perPage): array
     {
+             $userId = $taskRepo->userId ?? 0;
+
         $offset = ($page - 1) * $perPage;
 
         $stmt = Database::getConnection()->prepare(
