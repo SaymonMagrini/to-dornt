@@ -1,16 +1,16 @@
 <?php
 
-use App\Controllers\User\UserController;
-use App\Controllers\CategoryController;
-use App\Controllers\TagController;
-use App\Controllers\TaskController;
+use App\Controllers\Admin\AdminController;
+use App\Controllers\Admin\CategoryController;
+use App\Controllers\Admin\TagController;
+use App\Controllers\Admin\TaskController;
+use App\Controllers\Admin\UserController;
 use App\Controllers\AuthController;
 use App\Controllers\SiteController;
 use App\Middleware\AuthMiddleware;
 use Symfony\Component\HttpFoundation\Request;
 
 $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $routeCollector) {
-
     // Index Site
     $routeCollector->addGroup('/', function (FastRoute\RouteCollector $site) {
         $site->addRoute('GET', '', [SiteController::class, 'index']);
@@ -24,25 +24,25 @@ $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $rou
         $auth->addRoute('POST', '/logout', [AuthController::class, 'logout']);
     });
 
-    $routeCollector->addGroup('/user', function (FastRoute\RouteCollector $group) {
-        // Dashboard
-        $group->addGroup('', function (FastRoute\RouteCollector $user) {
-            $user->addRoute('GET', '', [UserController::class, 'index']);
+    $routeCollector->addGroup('/admin', function (FastRoute\RouteCollector $group) {
+        // Home Admin
+        $group->addGroup('', function (FastRoute\RouteCollector $admin) {
+            $admin->addRoute('GET', '', [AdminController::class, 'index']);
         });
 
         // Tarefas
-        $group->addGroup('/task', function (FastRoute\RouteCollector $tasks) {
-            $tasks->addRoute('GET', '', [TaskController::class, 'index']);
-            $tasks->addRoute('GET', '/create', [TaskController::class, 'create']);
-            $tasks->addRoute('POST', '/store', [TaskController::class, 'store']);
-            $tasks->addRoute('GET', '/show', [TaskController::class, 'show']);
-            $tasks->addRoute('GET', '/edit', [TaskController::class, 'edit']);
-            $tasks->addRoute('POST', '/update', [TaskController::class, 'update']);
-            $tasks->addRoute('POST', '/delete', [TaskController::class, 'delete']);
+        $group->addGroup('/tasks', function (FastRoute\RouteCollector $products) {
+            $products->addRoute('GET', '', [TaskController::class, 'index']);
+            $products->addRoute('GET', '/create', [TaskController::class, 'create']);
+            $products->addRoute('POST', '/store', [TaskController::class, 'store']);
+            $products->addRoute('GET', '/show', [TaskController::class, 'show']);
+            $products->addRoute('GET', '/edit', [TaskController::class, 'edit']);
+            $products->addRoute('POST', '/update', [TaskController::class, 'update']);
+            $products->addRoute('POST', '/delete', [TaskController::class, 'delete']);
         });
 
         // Categorias
-        $group->addGroup('/User/categories', function (FastRoute\RouteCollector $categories) {
+        $group->addGroup('/categories', function (FastRoute\RouteCollector $categories) {
             $categories->addRoute('GET', '', [CategoryController::class, 'index']);
             $categories->addRoute('GET', '/create', [CategoryController::class, 'create']);
             $categories->addRoute('POST', '/store', [CategoryController::class, 'store']);
@@ -53,15 +53,16 @@ $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $rou
         });
 
         // Tags
-        $group->addGroup('/User/tags', function (FastRoute\RouteCollector $tags) {
-            $tags->addRoute('GET', '', [TagController::class, 'index']);
-            $tags->addRoute('GET', '/create', [TagController::class, 'create']);
-            $tags->addRoute('POST', '/store', [TagController::class, 'store']);
-            $tags->addRoute('GET', '/show', [TagController::class, 'show']);
-            $tags->addRoute('GET', '/edit', [TagController::class, 'edit']);
-            $tags->addRoute('POST', '/update', [TagController::class, 'update']);
-            $tags->addRoute('POST', '/delete', [TagController::class, 'delete']);
+        $group->addGroup('/categories', function (FastRoute\RouteCollector $categories) {
+            $categories->addRoute('GET', '', [TagController::class, 'index']);
+            $categories->addRoute('GET', '/create', [TagController::class, 'create']);
+            $categories->addRoute('POST', '/store', [TagController::class, 'store']);
+            $categories->addRoute('GET', '/show', [TagController::class, 'show']);
+            $categories->addRoute('GET', '/edit', [TagController::class, 'edit']);
+            $categories->addRoute('POST', '/update', [TagController::class, 'update']);
+            $categories->addRoute('POST', '/delete', [TagController::class, 'delete']);
         });
+
 
 
         // Usuários
@@ -101,7 +102,7 @@ switch ($routeInfo[0]) {
 
         // Módulos protegidos
         $protectedRoutes = [
-            '/user',
+            '/admin',
         ];
 
         // Se a rota começar com alguma dessas, exige login

@@ -1,49 +1,19 @@
 <?php
 
 namespace App\Core;
-
 class Flash
 {
-    private static string $sessionKey = '_flash_messages';
-
-    
-    public static function add(string $message, string $type = 'info'): void
+    public static function push(string $type, string $message): void
     {
-        if (session_status() !== PHP_SESSION_ACTIVE) {
-            session_start();
-        }
-
-        $_SESSION[self::$sessionKey][] = [
-            'message' => $message,
-            'type' => $type
-        ];
+        Csrf::ensureSession();
+        $_SESSION['_flash'][] = ['type' => $type, 'message' => $message];
     }
 
-  
-    public static function getAll(): array
+    public static function pullAll(): array
     {
-        if (session_status() !== PHP_SESSION_ACTIVE) {
-            session_start();
-        }
-
-        $messages = $_SESSION[self::$sessionKey] ?? [];
-        unset($_SESSION[self::$sessionKey]);
-
-        return $messages;
-    }
-
-
-    public static function render(): void
-    {
-        foreach (self::getAll() as $msg) {
-            $color = match ($msg['type']) {
-                'error' => 'red',
-                'success' => 'limegreen',
-                'warning' => 'orange',
-                default => 'cyan'
-            };
-
-            echo "<p style='color: {$color}; text-align:center;'>" . htmlspecialchars($msg['message']) . "</p>";
-        }
+        Csrf::ensureSession();
+        $all = $_SESSION['_flash'] ?? [];
+        unset($_SESSION['_flash']);
+        return $all;
     }
 }

@@ -14,18 +14,26 @@ class TaskService
             $errors['title'] = 'Título é obrigatório';
         }
 
-        if (!empty($data['due_to'])) {
-            $dueTo = trim($data['due_to']);
-            if (strtotime($dueTo) === false) {
-                $errors['due_to'] = 'Data de entrega inválida';
+        if (empty($data['category_id']) || !ctype_digit((string) $data['category_id'])) {
+            $errors['category_id'] = 'Categoria é obrigatória';
+        }
+
+        if (!isset($data['tag_ids']) || !is_array($data['tag_ids'])) {
+            $errors['tag_ids'] = 'Tags inválidas';
+        } else {
+            foreach ($data['tag_ids'] as $tagId) {
+                if (!ctype_digit((string) $tagId)) {
+                    $errors['tag_ids'] = 'Lista de tags contém valores inválidos';
+                    break;
+                }
             }
         }
 
-        if (
-            isset($data['done'])
-            && !in_array($data['done'], [true, false, 0, 1, '0', '1'], true)
-        ) {
-            $errors['done'] = 'Valor inválido para done';
+        if (!empty($data['due_to'])) {
+            $date = date_create($data['due_to']);
+            if (!$date) {
+                $errors['due_to'] = 'Data de entrega inválida';
+            }
         }
 
         return $errors;
@@ -34,26 +42,23 @@ class TaskService
     public function make(array $data): Task
     {
         $id = isset($data['id']) ? (int) $data['id'] : null;
-
+        $category_id = (int) ($data['category_id'] ?? 0);
+        $tag_ids = $data['tag_ids'] ?? [];
         $title = trim($data['title'] ?? '');
-        $description = isset($data['description']) ? trim($data['description']) : null;
-        $dueTo = isset($data['due_to']) && trim($data['due_to']) !== ''
-            ? trim($data['due_to'])
-            : null;
-
-        $done = isset($data['done'])
-            ? (bool) $data['done']
-            : false;
-
-        $createdAt = $data['created_at'] ?? '';
+        $description = trim($data['description'] ?? '') ?: null;
+        $due_to = $data['due_to'] ?? null;
+        $done = isset($data['done']) ? (bool) $data['done'] : false;
+        $created_at = $data['created_at'] ?? '';
 
         return new Task(
             $id,
+            $category_id,
             $title,
+            $tag_ids,
             $description,
-            $dueTo,
+            $due_to,
             $done,
-            $createdAt
+            $created_at
         );
     }
 }
