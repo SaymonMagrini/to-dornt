@@ -2,10 +2,10 @@
 namespace App\Repositories;
 
 use App\Core\Database;
-use App\Models\Product;
+use App\Models\Task;
 use PDO;
 
-class ProductRepository {
+class TaskRepository {
     public function countAll(): int {
         $stmt = Database::getConnection()->query("SELECT COUNT(*) FROM products");
         return (int)$stmt->fetchColumn();
@@ -24,12 +24,12 @@ class ProductRepository {
         $row = $stmt->fetch();
         return $row ?: null;
     }
-    public function create(Product $p): int {
+    public function create(Task $p): int {
         $stmt = Database::getConnection()->prepare("INSERT INTO products (category_id, name, price, image_path) VALUES (?, ?, ?, ?)");
         $stmt->execute([$p->category_id, $p->name, $p->price, $p->image_path]);
         return (int)Database::getConnection()->lastInsertId();
     }
-    public function update(Product $p): bool {
+    public function update(Task $p): bool {
         $stmt = Database::getConnection()->prepare("UPDATE products SET category_id = ?, name = ?, price = ?, image_path = ? WHERE id = ?");
         return $stmt->execute([$p->category_id, $p->name, $p->price, $p->image_path, $p->id]);
     }

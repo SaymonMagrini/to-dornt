@@ -4,22 +4,22 @@ namespace App\Controllers\Admin;
 use App\Core\Csrf;
 use App\Core\View;
 use App\Repositories\CategoryRepository;
-use App\Repositories\ProductRepository;
-use App\Services\ProductService;
+use App\Repositories\TaskRepository;
+use App\Services\TaskService;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class ProductController {
+class TaskController {
     private View $view;
-    private ProductRepository $repo;
-    private ProductService $service;
+    private TaskRepository $repo;
+    private TaskService $service;
     private CategoryRepository $categoryRepo;
 
     public function __construct() {
         $this->view = new View();
-        $this->repo = new ProductRepository();
-        $this->service = new ProductService();
+        $this->repo = new TaskRepository();
+        $this->service = new TaskService();
         $this->categoryRepo = new CategoryRepository();
     }
 

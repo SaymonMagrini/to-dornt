@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-class Product
+class Task
 {
     public ?int $id;
     public string $name;

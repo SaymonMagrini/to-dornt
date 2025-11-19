@@ -1,10 +1,10 @@
 <?php
 namespace App\Services;
 
-use App\Models\Product;
+use App\Models\Task;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
-class ProductService {
+class TaskService {
     public function validate(array $data, ?UploadedFile $file = null): array {
         $errors = [];
         $name = trim($data['name'] ?? '');
@@ -38,11 +38,11 @@ class ProductService {
         return '/uploads/' . $name;
     }
 
-    public function make(array $data, ?string $imagePath = null): Product {
+    public function make(array $data, ?string $imagePath = null): Task {
         $name = trim($data['name'] ?? '');
         $price = (float)($data['price'] ?? 0);
         $category_id = (int)($data['category_id'] ?? 0);
         $id = isset($data['id']) ? (int)$data['id'] : null;
-        return new Product($id, $name, $price, $category_id, $imagePath);
+        return new Task($id, $name, $price, $category_id, $imagePath);
     }
 }
