@@ -15,7 +15,7 @@
         </div>
     <?php endforeach; ?>
 
-    <?= $content ?>
+    <?echo ($content) ?>
 </div>
 
 </body>
