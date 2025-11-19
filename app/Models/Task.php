@@ -1,23 +1,28 @@
 <?php
-
 namespace App\Models;
 
 class Task
 {
     public ?int $id;
-    public string $name;
-    public float $price;
-    public int $category_id;
-    public ?string $image_path;
+    public string $title;
+    public ?string $description;
+    public string $due_to;
+    public bool $done;
     public string $created_at;
 
-    public function __construct(?int $id, string $name, float $price, int $category_id, ?string $image_path = null, string $created_at = '')
-    {
+    public function __construct(
+        ?int $id,
+        string $title,
+        ?string $description = null,
+        ?string $due_to = null,
+        bool $done = false,
+        string $created_at = ''
+    ) {
         $this->id = $id;
-        $this->name = $name;
-        $this->price = $price;
-        $this->category_id = $category_id;
-        $this->image_path = $image_path;
+        $this->title = $title;
+        $this->description = $description;
+        $this->done = $done;
+        $this->due_to = $due_to;
         $this->created_at = $created_at;
     }
 }
