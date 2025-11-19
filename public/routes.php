@@ -53,7 +53,7 @@ $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $rou
         });
 
         // Tags
-        $group->addGroup('/categories', function (FastRoute\RouteCollector $categories) {
+        $group->addGroup('/tags', function (FastRoute\RouteCollector $categories) {
             $categories->addRoute('GET', '', [TagController::class, 'index']);
             $categories->addRoute('GET', '/create', [TagController::class, 'create']);
             $categories->addRoute('POST', '/store', [TagController::class, 'store']);
