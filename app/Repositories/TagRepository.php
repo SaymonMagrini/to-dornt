@@ -3,15 +3,15 @@
 namespace App\Repositories;
 
 use App\Core\Database;
-use App\Models\Category;
+use App\Models\Tag;
 use PDO;
 
-class CategoryRepository
+class TagRepository
 {
     public function countAllByUser(int $userId): int
     {
         $stmt = Database::getConnection()->prepare(
-            "SELECT COUNT(*) FROM categories WHERE user_id = ?"
+            "SELECT COUNT(*) FROM tags WHERE user_id = ?"
         );
         $stmt->execute([$userId]);
         return (int)$stmt->fetchColumn();
@@ -22,7 +22,7 @@ class CategoryRepository
         $offset = ($page - 1) * $perPage;
 
         $stmt = Database::getConnection()->prepare(
-            "SELECT * FROM categories 
+            "SELECT * FROM tags 
              WHERE user_id = :user_id
              ORDER BY id DESC 
              LIMIT :limit OFFSET :offset"
@@ -40,7 +40,7 @@ class CategoryRepository
     public function find(int $id, int $userId): ?array
     {
         $stmt = Database::getConnection()->prepare(
-            "SELECT * FROM categories WHERE id = ? AND user_id = ?"
+            "SELECT * FROM tags WHERE id = ? AND user_id = ?"
         );
 
         $stmt->execute([$id, $userId]);
@@ -49,41 +49,61 @@ class CategoryRepository
         return $row ?: null;
     }
 
-    public function create(Category $category): int
+    public function findMany(array $ids, int $userId): array
+{
+    if (empty($ids)) {
+        return [];
+    }
+
+    $placeholders = implode(',', array_fill(0, count($ids), '?'));
+    $params = array_merge($ids, [$userId]);
+
+    $stmt = Database::getConnection()->prepare(
+        "SELECT * FROM tags 
+         WHERE id IN ($placeholders) 
+         AND user_id = ?"
+    );
+
+    $stmt->execute($params);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+
+    public function create(Tag $tag): int
     {
         $stmt = Database::getConnection()->prepare(
-            "INSERT INTO categories (user_id, name, description) VALUES (?, ?, ?)"
+            "INSERT INTO tags (user_id, name, description) VALUES (?, ?, ?)"
         );
 
         $stmt->execute([
-            $category->userId,
-            $category->name,
-            $category->description
+            $tag->userId,
+            $tag->name,
+            $tag->description
         ]);
 
         return (int)Database::getConnection()->lastInsertId();
     }
 
-    public function update(Category $category): bool
+    public function update(Tag $tag): bool
     {
         $stmt = Database::getConnection()->prepare(
-            "UPDATE categories 
+            "UPDATE tags 
              SET name = ?, description = ?
              WHERE id = ? AND user_id = ?"
         );
 
         return $stmt->execute([
-            $category->name,
-            $category->description,
-            $category->id,
-            $category->userId
+            $tag->name,
+            $tag->description,
+            $tag->id,
+            $tag->userId
         ]);
     }
 
     public function delete(int $id, int $userId): bool
     {
         $stmt = Database::getConnection()->prepare(
-            "DELETE FROM categories WHERE id = ? AND user_id = ?"
+            "DELETE FROM tags WHERE id = ? AND user_id = ?"
         );
 
         return $stmt->execute([$id, $userId]);
@@ -92,7 +112,7 @@ class CategoryRepository
     public function findAll(int $userId): array
     {
         $stmt = Database::getConnection()->prepare(
-            "SELECT * FROM categories 
+            "SELECT * FROM tags 
              WHERE user_id = ?
              ORDER BY id DESC"
         );
@@ -104,18 +124,18 @@ class CategoryRepository
     public function getArray(int $userId): array
     {
         $stmt = Database::getConnection()->prepare(
-            "SELECT id, name FROM categories 
+            "SELECT id, name FROM tags 
              WHERE user_id = ?
              ORDER BY id DESC"
         );
 
         $stmt->execute([$userId]);
 
-        $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $tags = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         $return = [];
-        foreach ($categories as $category) {
-            $return[$category['id']] = $category['name'];
+        foreach ($tags as $tag) {
+            $return[$tag['id']] = $tag['name'];
         }
 
         return $return;

@@ -1,9 +1,9 @@
 <?php
 namespace App\Services;
 
-use App\Models\Category;
+use App\Models\Tag;
 
-class CategoryService {
+class TagService {
     public function validate(array $data): array {
         $errors = [];
         $name = trim($data['name'] ?? '');
@@ -13,11 +13,11 @@ class CategoryService {
         return $errors;
     }
 
-    public function make(array $data): Category {
+    public function make(array $data): Tag {
         $userId = trim($data['userId'] ?? '');
         $name = trim($data['name'] ?? '');
         $description = trim($data['description'] ?? '');
         $id = isset($data['id']) ? (int)$data['id'] : null;
-        return new Category($id, $userId, $name, $description);
+        return new Tag($id, $userId, $name, $description);
     }
 }
