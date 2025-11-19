@@ -1,12 +1,11 @@
-<?php $this->layout('layouts/admin', ['title' => 'Admin']) ?>
+<?php $this->layout('layouts/base', ['title' => 'Dashboard']) ?>
 
-<?php $this->start('body') ?>
+<h2>Dashboard</h2>
 
-<div class="card shadow-sm" id="tableView">
-    <?php $this->insert('partials/admin/flash') ?>
-    <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
-        <h5 class="mb-0 fw-semibold">Bem vindo</h5>
-    </div>
-</div>
+<p>Bem-vindo ao sistema de tarefas.</p>
 
-<?php $this->stop() ?>
+<ul>
+    <li><a href="/admin/tasks">Gerenciar tarefas</a></li>
+    <li><a href="/admin/categories">Gerenciar categorias</a></li>
+    <li><a href="/admin/tags">Gerenciar tags</a></li>
+</ul>

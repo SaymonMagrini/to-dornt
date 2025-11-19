@@ -2,10 +2,18 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title><?= $title ?? 'Autenticação' ?></title>
+    <title><?= $title ?? 'Painel' ?></title>
     <link rel="stylesheet" href="/assets/style.css">
 </head>
 <body>
+
+<div class="header">
+    <a href="/admin" class="header__itm">Dashboard</a>
+    <a href="/admin/tasks" class="header__itm">Tarefas</a>
+    <a href="/admin/categories" class="header__itm">Categorias</a>
+    <a href="/admin/tags" class="header__itm">Tags</a>
+    <a href="/logout" class="header__itm">Sair</a>
+</div>
 
 <div class="container">
 
