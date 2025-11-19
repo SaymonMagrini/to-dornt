@@ -8,7 +8,7 @@ use PDO;
 
 class TagRepository
 {
-    public function countAllByUser(int $userId): int
+    public function countAll(int $userId): int
     {
         $stmt = Database::getConnection()->prepare(
             "SELECT COUNT(*) FROM tags WHERE user_id = ?"

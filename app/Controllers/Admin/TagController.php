@@ -17,7 +17,6 @@ class TagController
     private View $view;
     private TagRepository $repo;
     private TagService $service;
-
     private TaskRepository $taskRepo;
 
     public function __construct()
@@ -28,86 +27,132 @@ class TagController
         $this->taskRepo = new TaskRepository();
     }
 
-    public function index(Request $request): Response
+    public function index(Request $request, int $userId): Response
     {
         $page = max(1, (int)$request->query->get('page', 1));
         $perPage = 5;
-        $total = $this->repo->countAll();
-        $tags = $this->repo->paginate($page, $perPage);
+
+        $total = $this->repo->countAll($userId);
+        $tags = $this->repo->paginate($userId, $page, $perPage);
         $pages = (int)ceil($total / $perPage);
+
         $html = $this->view->render('admin/tags/index', compact('tags', 'page', 'pages'));
         return new Response($html);
     }
 
-    public function create(): Response
+    public function create(int $userId): Response
     {
-        $html = $this->view->render('admin/tags/create', ['csrf' => Csrf::token(), 'errors' => []]);
+        $html = $this->view->render('admin/tags/create', [
+            'csrf' => Csrf::token(),
+            'errors' => [],
+            'old' => []
+        ]);
         return new Response($html);
     }
 
-    public function store(Request $request): Response
+    public function store(Request $request, int $userId): Response
     {
-        if (!Csrf::validate($request->request->get('_csrf'))) return new Response('Token CSRF inválido', 419);
-        $errors = $this->service->validate($request->request->all());
-        if ($errors) {
-            $html = $this->view->render('admin/tags/create', ['csrf' => Csrf::token(), 'errors' => $errors, 'old' => $request->request->all()]);
-            return new Response($html, 422);
+        if (!Csrf::validate($request->request->get('_csrf'))) {
+            return new Response('Token CSRF inválido', 419);
         }
-        $tag = $this->service->make($request->request->all());
-        $id = $this->repo->create($tag);
-        Flash::push('success', "Categoria criada com sucesso!");
-        return new RedirectResponse('/admin/tags');
-    }
 
-    public function show(Request $request): Response
-    {
-        $id = (int)$request->query->get('id', 0);
-        $tag = $this->repo->find($id);
-        if (!$tag) return new Response('Categoria não encontrada', 404);
-        $html = $this->view->render('admin/tags/show', ['tag' => $tag]);
-        return new Response($html);
-    }
-
-    public function edit(Request $request): Response
-    {
-        $id = (int)$request->query->get('id', 0);
-        $tag = $this->repo->find($id);
-        if (!$tag) return new Response('Categoria não encontrada', 404);
-        $html = $this->view->render('admin/tags/edit', ['tag' => $tag, 'csrf' => Csrf::token(), 'errors' => []]);
-        return new Response($html);
-    }
-
-    public function update(Request $request): Response
-    {
-        if (!Csrf::validate($request->request->get('_csrf'))) return new Response('Token CSRF inválido', 419);
         $data = $request->request->all();
-        $file = $request->files->get('image');
         $errors = $this->service->validate($data);
+
         if ($errors) {
-            $html = $this->view->render('admin/tags/edit', ['tag' => array_merge($this->repo->find((int)$data['id']), $data), 'csrf' => Csrf::token(), 'errors' => $errors]);
+            $html = $this->view->render('admin/tags/create', [
+                'csrf' => Csrf::token(),
+                'errors' => $errors,
+                'old' => $data
+            ]);
             return new Response($html, 422);
         }
-        $tag = $this->service->make($data);
-        if (!$tag->id) return new Response('ID inválido', 422);
-        $this->repo->update($tag);
-        Flash::push('success', "Categoria atualizada com sucesso!");
+
+        $category = $this->service->make($data);
+        $this->repo->create($category);
+
+        Flash::push('success', "Tag criada com sucesso!");
         return new RedirectResponse('/admin/tags');
     }
 
-    public function delete(Request $request): Response
+    public function show(Request $request, int $userId): Response
     {
-        // Pegar produto com tag
-        $tags = $this->taskRepo->findByTagId((int)$request->request->get('id', 0));
-        if (count($tags) > 0) {
-            Flash::push("danger", "Categoria não pode ser excluída");
-            return new RedirectResponse('/admin/tags');
+        $id = (int)$request->query->get('id', 0);
+        $category = $this->repo->find($id, $userId);
+
+        if (!$category) {
+            return new Response('Tag não encontrada', 404);
         }
 
-        if (!Csrf::validate($request->request->get('_csrf'))) return new Response('Token CSRF inválido', 419);
-        $id = (int)$request->request->get('id', 0);
-        if ($id > 0) $this->repo->delete($id);
+        $html = $this->view->render('admin/tags/show', ['category' => $category]);
+        return new Response($html);
+    }
 
-        Flash::push('success', "Categoria excluída com sucesso!");
+    public function edit(Request $request, int $userId): Response
+    {
+        $id = (int)$request->query->get('id', 0);
+        $category = $this->repo->find($id, $userId);
+
+        if (!$category) {
+            return new Response('Tag não encontrada', 404);
+        }
+
+        $html = $this->view->render('admin/tags/edit', [
+            'category' => $category,
+            'csrf' => Csrf::token(),
+            'errors' => []
+        ]);
+
+        return new Response($html);
+    }
+
+    public function update(Request $request, int $userId): Response
+    {
+        if (!Csrf::validate($request->request->get('_csrf'))) {
+            return new Response('Token CSRF inválido', 419);
+        }
+
+        $data = $request->request->all();
+        $errors = $this->service->validate($data);
+
+        if ($errors) {
+            $category = $this->repo->find((int)$data['id'], $userId);
+
+            $html = $this->view->render('admin/tags/edit', [
+                'category' => array_merge($category, $data),
+                'csrf' => Csrf::token(),
+                'errors' => $errors
+            ]);
+
+            return new Response($html, 422);
+        }
+
+        $category = $this->service->make($data);
+
+        if (!$category->id) {
+            return new Response('ID inválido', 422);
+        }
+
+        $this->repo->update($category);
+
+        Flash::push('success', "Tag atualizada com sucesso!");
+        return new RedirectResponse('/admin/tags');
+    }
+
+    public function delete(Request $request, int $userId): Response
+    {
+        $categoryId = (int)$request->request->get('id', 0);
+
+        if (!Csrf::validate($request->request->get('_csrf'))) {
+            return new Response('Token CSRF inválido', 419);
+        }
+
+
+        if ($categoryId > 0) {
+            $this->repo->delete($categoryId, $userId);
+        }
+
+        Flash::push('success', "Tag excluída com sucesso!");
         return new RedirectResponse('/admin/tags');
     }
 }

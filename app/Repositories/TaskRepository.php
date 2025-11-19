@@ -15,7 +15,7 @@ class TaskRepository
         );
         $stmt->execute([$userId]);
 
-        return (int) $stmt->fetchColumn();
+        return (int)$stmt->fetchColumn();
     }
 
     public function paginate(int $userId, int $page, int $perPage): array
@@ -30,8 +30,8 @@ class TaskRepository
         );
 
         $stmt->bindValue(':user_id', $userId, PDO::PARAM_INT);
-        $stmt->bindValue(':limit', $perPage, PDO::PARAM_INT);
-        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+        $stmt->bindValue(':limit',  $perPage, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset,  PDO::PARAM_INT);
 
         $stmt->execute();
 
@@ -73,7 +73,7 @@ class TaskRepository
             $task->created_at
         ]);
 
-        $taskId = (int) Database::getConnection()->lastInsertId();
+        $taskId = (int)Database::getConnection()->lastInsertId();
 
         $this->syncTags($taskId, $task->tag_ids);
 
@@ -174,7 +174,6 @@ class TaskRepository
     private function getTagIds(int $taskId): array
     {
         $stmt = Database::getConnection()->prepare(
-
             "SELECT tag_id FROM task_tag WHERE task_id = ?"
         );
         $stmt->execute([$taskId]);

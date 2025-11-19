@@ -2,47 +2,63 @@
 namespace App\Services;
 
 use App\Models\Task;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 
-class TaskService {
-    public function validate(array $data, ?UploadedFile $file = null): array {
+class TaskService
+{
+    public function validate(array $data): array
+    {
         $errors = [];
-        $name = trim($data['name'] ?? '');
-        $price = $data['price'] ?? '';
-        $category_id = $data['category_id'] ?? '';
 
-        if ($name === '') $errors['name'] = 'Nome é obrigatório';
-        if (!is_numeric($price) || (float)$price <= 0) $errors['price'] = 'Preço deve ser numérico e maior que zero';
-        if ($category_id === '') $errors['category_id'] = 'Categoria é obrigatória';
+        $title = trim($data['title'] ?? '');
+        if ($title === '') {
+            $errors['title'] = 'Título é obrigatório';
+        }
 
-        if ($file) {
-            $maxMb = (int)($_ENV['UPLOAD_MAX_MB'] ?? 5);
-            $allowed = ['image/jpeg','image/png','image/webp'];
-            if (!in_array($file->getMimeType(), $allowed, true)) {
-                $errors['image'] = 'A imagem deve ser JPEG, PNG ou WEBP';
+        if (empty($data['category_id']) || !ctype_digit((string) $data['category_id'])) {
+            $errors['category_id'] = 'Categoria é obrigatória';
+        }
+
+        if (!isset($data['tag_ids']) || !is_array($data['tag_ids'])) {
+            $errors['tag_ids'] = 'Tags inválidas';
+        } else {
+            foreach ($data['tag_ids'] as $tagId) {
+                if (!ctype_digit((string) $tagId)) {
+                    $errors['tag_ids'] = 'Lista de tags contém valores inválidos';
+                    break;
+                }
             }
-            if ($file->getSize() > $maxMb * 1024 * 1024) {
-                $errors['image'] = 'Tamanho máximo: ' . $maxMb . 'MB';
+        }
+
+        if (!empty($data['due_to'])) {
+            $date = date_create($data['due_to']);
+            if (!$date) {
+                $errors['due_to'] = 'Data de entrega inválida';
             }
         }
 
         return $errors;
     }
 
-    public function storeImage(?UploadedFile $file): ?string {
-        if (!$file) return null;
-        $ext = strtolower($file->guessExtension() ?: $file->getClientOriginalExtension());
-        $name = bin2hex(random_bytes(8)) . '.' . $ext;
-        $dest = dirname(__DIR__, 2) . '/public/uploads/' . $name;
-        $file->move(dirname($dest), $name);
-        return '/uploads/' . $name;
-    }
+    public function make(array $data): Task
+    {
+        $id = isset($data['id']) ? (int) $data['id'] : null;
+        $category_id = (int) ($data['category_id'] ?? 0);
+        $tag_ids = $data['tag_ids'] ?? [];
+        $title = trim($data['title'] ?? '');
+        $description = trim($data['description'] ?? '') ?: null;
+        $due_to = $data['due_to'] ?? null;
+        $done = isset($data['done']) ? (bool) $data['done'] : false;
+        $created_at = $data['created_at'] ?? '';
 
-    public function make(array $data, ?string $imagePath = null): Task {
-        $name = trim($data['name'] ?? '');
-        $price = (float)($data['price'] ?? 0);
-        $category_id = (int)($data['category_id'] ?? 0);
-        $id = isset($data['id']) ? (int)$data['id'] : null;
-        return new Task($id, $name, $price, $category_id, $imagePath);
+        return new Task(
+            $id,
+            $category_id,
+            $title,
+            $tag_ids,
+            $description,
+            $due_to,
+            $done,
+            $created_at
+        );
     }
 }
