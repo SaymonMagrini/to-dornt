@@ -1,4 +1,4 @@
-<?php $this->layout('layouts/base', ['title' => 'Tarefas']) ?>
+<?php $this->layout('layouts/admin', ['title' => 'Tarefas']) ?>
 
 <h2>Lista de Tarefas</h2>
 
@@ -16,7 +16,7 @@
         <tr>
             <td><?= $t['id'] ?></td>
             <td><?= htmlspecialchars($t['title']) ?></td>
-            <td><?= htmlspecialchars($t['status']) ?></td>
+            <td><?= htmlspecialchars($t['status']) ?></td>  
             <td>
                 <a class="btn" href="/admin/tasks/edit?id=<?= $t['id'] ?>">Editar</a>
                 <a class="btn danger" href="/admin/tasks/delete?id=<?= $t['id'] ?>">Excluir</a>

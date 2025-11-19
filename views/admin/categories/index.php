@@ -1,4 +1,4 @@
-<?php $this->layout('layouts/base', ['title' => 'Categorias']) ?>
+<?php $this->layout('layouts/admin', ['title' => 'Categorias']) ?>
 
 <h2>Categorias</h2>
 
