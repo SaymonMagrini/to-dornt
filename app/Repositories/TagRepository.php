@@ -10,7 +10,7 @@ use App\Repositories\TaskRepository;
 
 class TagRepository
 {
-    public TaskRepository $taskRepo;
+    private TaskRepository $taskRepo;
 
     public function countAll(): int
     {
@@ -129,8 +129,10 @@ class TagRepository
         return $stmt->fetchAll();
     }
 
-    public function getArray(int $userId): array
+    public function getArray(): array
     {
+                     $userId = $taskRepo->userId ?? 0;
+
         $stmt = Database::getConnection()->prepare(
             "SELECT id, name FROM tags 
              WHERE user_id = ?

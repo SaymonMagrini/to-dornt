@@ -5,11 +5,17 @@ namespace App\Repositories;
 use App\Core\Database;
 use App\Models\Category;
 use PDO;
+use App\Repositories\TaskRepository;
+
 
 class CategoryRepository
 {
-    public function countAll(int $userId): int
+        private TaskRepository $taskRepo;
+
+    public function countAll(): int
     {
+             $userId = $taskRepo->userId ?? 0;
+
         $stmt = Database::getConnection()->prepare(
             "SELECT COUNT(*) FROM categories WHERE user_id = ?"
         );
@@ -17,8 +23,10 @@ class CategoryRepository
         return (int)$stmt->fetchColumn();
     }
 
-    public function paginate(int $userId, int $page, int $perPage): array
+    public function paginate(int $page, int $perPage): array
     {
+             $userId = $taskRepo->userId ?? 0;
+
         $offset = ($page - 1) * $perPage;
 
         $stmt = Database::getConnection()->prepare(
@@ -101,8 +109,10 @@ class CategoryRepository
         return $stmt->fetchAll();
     }
 
-    public function getArray(int $userId): array
+    public function getArray(): array
     {
+                     $userId = $taskRepo->userId ?? 0;
+
         $stmt = Database::getConnection()->prepare(
             "SELECT id, name FROM categories 
              WHERE user_id = ?

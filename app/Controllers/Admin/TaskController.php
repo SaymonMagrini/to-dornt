@@ -28,17 +28,17 @@ class TaskController
         $this->tagRepo = new TagRepository();
     }
 
-    public function index(Request $request, int $userId): Response
+    public function index(Request $request): Response
     {
         $page = max(1, (int)$request->query->get('page', 1));
         $perPage = 10;
 
-        $total = $this->repo->countAll($userId);
-        $tasks = $this->repo->paginate($userId, $page, $perPage);
+        $total = $this->repo->countAll();
+        $tasks = $this->repo->paginate($page, $perPage);
         $pages = (int)ceil($total / $perPage);
 
-        $categories = $this->categoryRepo->getArray($userId);
-        $tags = $this->tagRepo->getArray($userId);
+        $categories = $this->categoryRepo->getArray();
+        $tags = $this->tagRepo->getArray();
 
         return new Response(
             $this->view->render('admin/tasks/index', compact('tasks', 'page', 'pages', 'categories', 'tags'))

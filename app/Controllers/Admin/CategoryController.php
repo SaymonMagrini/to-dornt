@@ -27,13 +27,13 @@ class CategoryController
         $this->taskRepo = new TaskRepository();
     }
 
-    public function index(Request $request, int $userId): Response
+    public function index(Request $request): Response
     {
         $page = max(1, (int)$request->query->get('page', 1));
         $perPage = 5;
 
-        $total = $this->repo->countAll($userId);
-        $categories = $this->repo->paginate($userId, $page, $perPage);
+        $total = $this->repo->countAll();
+        $categories = $this->repo->paginate( $page, $perPage);
         $pages = (int)ceil($total / $perPage);
 
         $html = $this->view->render('admin/categories/index', compact('categories', 'page', 'pages'));
