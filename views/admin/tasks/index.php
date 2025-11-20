@@ -1,24 +1,43 @@
-<?php $this->layout('layouts/admin', ['title' => 'Tags']) ?>
+<?php $this->layout('layouts/admin', ['title' => 'Tarefas']) ?>
 
-<h2>Tags</h2>
+<?php $this->start('body') ?>
 
-<a class="btn" href="/admin/tags/create">Nova Tag</a>
+<div class="card shadow-sm">
+    <?php $this->insert('partials/admin/form/header', ['title' => 'Tarefas']) ?>
 
-<table class="table">
-    <tr>
-        <th>ID</th>
-        <th>Nome</th>
-        <th>Ações</th>
-    </tr>
+    <div class="card-body">
 
-    <?php foreach ($tags as $c): ?>
-        <tr>
-            <td><?= $c['id'] ?></td>
-            <td><?= htmlspecialchars($c['name']) ?></td>
-            <td>
-                <a class="btn" href="/admin/tags/edit?id=<?= $c['id'] ?>">Editar</a>
-                <a class="btn danger" href="/admin/tags/delete?id=<?= $c['id'] ?>">Excluir</a>
-            </td>
-        </tr>
-    <?php endforeach; ?>
-</table>
+        <a href="/admin/tasks/create" class="btn btn-primary mb-3">Nova Tarefa</a>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Título</th>
+                    <th>Status</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($tasks as $task): ?>
+                    <tr>
+                        <td><?= $task->id ?></td>
+                        <td><?= $this->e($task->title) ?></td>
+                        <td><?= $task->status ?></td>
+                        <td>
+                            <a href="/admin/tasks/<?= $task->id ?>" class="btn btn-sm btn-info">Ver</a>
+                            <a href="/admin/tasks/<?= $task->id ?>/edit" class="btn btn-sm btn-warning">Editar</a>
+                            <a href="/admin/tasks/<?= $task->id ?>/delete" class="btn btn-sm btn-danger"
+                               onclick="return confirm('Tem certeza?')">
+                                Excluir
+                            </a>
+                        </td>
+                    </tr>
+                <?php endforeach ?>
+            </tbody>
+        </table>
+
+    </div>
+</div>
+
+<?php $this->stop() ?>

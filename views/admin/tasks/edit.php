@@ -1,29 +1,43 @@
-<?php $this->layout('layouts/base', ['title' => 'Editar Tarefa']) ?>
+<?php $this->layout('layouts/admin', ['title' => 'Editar Tarefa']) ?>
 
-<h2>Editar Tarefa</h2>
+<?php $this->start('body') ?>
 
-<form method="POST" action="/admin/tasks/edit?id=<?= $task['id'] ?>">
-    <input type="text" name="title" class="input-texto" value="<?= htmlspecialchars($task['title']) ?>" required>
+<div class="card shadow-sm" id="formView">
 
-    <textarea name="description" class="input-texto"><?= htmlspecialchars($task['description']) ?></textarea>
+    <?php $this->insert('partials/admin/form/header', ['title' => 'Editar Tarefa']) ?>
 
-    <select name="category_id" class="input-texto">
-        <option value="">Selecione a categoria</option>
-        <?php foreach ($categories as $c): ?>
-            <option value="<?= $c['id'] ?>" <?= $task['category_id'] == $c['id'] ? 'selected' : '' ?>>
-                <?= htmlspecialchars($c['name']) ?>
-            </option>
-        <?php endforeach; ?>
-    </select>
+    <div class="card-body">
 
-    <p>Tags:</p>
-    <?php foreach ($tags as $tag): ?>
-        <label>
-            <input type="checkbox" name="tags[]" value="<?= $tag['id'] ?>"
-                <?= in_array($tag['id'], $task['tags']) ? 'checked' : '' ?>>
-            <?= htmlspecialchars($tag['name']) ?>
-        </label><br>
-    <?php endforeach; ?>
+        <form action="/admin/tasks/<?= $task->id ?>/update" method="post">
 
-    <button type="submit" class="btn">Salvar alterações</button>
-</form>
+            <div class="mb-3">
+                <label class="form-label">Título</label>
+                <input type="text" class="form-control" name="title"
+                       value="<?= $this->e($task->title) ?>" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Descrição</label>
+                <textarea name="description" class="form-control">
+                    <?= $this->e($task->description) ?>
+                </textarea>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Status</label>
+                <select name="status" class="form-select">
+                    <option value="pendente" <?= $task->status === 'pendente' ? 'selected' : '' ?>>Pendente</option>
+                    <option value="concluida" <?= $task->status === 'concluida' ? 'selected' : '' ?>>Concluída</option>
+                </select>
+            </div>
+
+            <?= \App\Core\Csrf::input() ?>
+
+            <button class="btn btn-success">Salvar</button>
+            <a href="/admin/tasks" class="btn btn-secondary">Cancelar</a>
+        </form>
+
+    </div>
+</div>
+
+<?php $this->stop() ?>

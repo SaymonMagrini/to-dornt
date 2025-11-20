@@ -1,10 +1,23 @@
-<?php $this->layout('layouts/base', ['title' => 'Detalhes da Tag']) ?>
+<?php $this->layout('layouts/admin', ['title' => 'Detalhes da Tarefa']) ?>
 
-<h2>Detalhes da Tag</h2>
+<?php $this->start('body') ?>
 
-<div class="detalhes">
-    <p><strong>ID:</strong> <?= htmlspecialchars($tag['id']) ?></p>
-    <p><strong>Nome:</strong> <?= htmlspecialchars($tag['name']) ?></p>
+<div class="card shadow-sm" id="formView">
+
+    <?php $this->insert('partials/admin/form/header', ['title' => 'Detalhes da Tarefa']) ?>
+
+    <div class="card-body">
+
+        <h4><?= $this->e($task->title) ?></h4>
+
+        <p><strong>Status:</strong> <?= $task->status ?></p>
+        <p><strong>Descrição:</strong></p>
+
+        <p><?= nl2br($this->e($task->description)) ?></p>
+
+        <a href="/admin/tasks" class="btn btn-secondary">Voltar</a>
+
+    </div>
 </div>
 
-<a class="btn" href="javascript:history.back()">Voltar</a>
+<?php $this->stop() ?>

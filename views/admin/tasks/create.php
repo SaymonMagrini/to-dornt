@@ -1,26 +1,31 @@
-<?php $this->layout('layouts/base', ['title' => 'Criar Tarefa']) ?>
+<?php $this->layout('layouts/admin', ['title' => 'Nova Tarefa']) ?>
 
-<h2>Nova Tarefa</h2>
+<?php $this->start('body') ?>
 
-<form method="POST" action="/admin/tasks/create">
-    <input type="text" name="title" class="input-texto" placeholder="Título" required>
+<div class="card shadow-sm" id="formView">
 
-    <textarea name="description" class="input-texto" placeholder="Descrição"></textarea>
+    <?php $this->insert('partials/admin/form/header', ['title' => 'Nova Tarefa']) ?>
 
-    <select name="category_id" class="input-texto">
-        <option value="">Selecione a categoria</option>
-        <?php foreach ($categories as $c): ?>
-            <option value="<?= $c['id'] ?>"><?= htmlspecialchars($c['name']) ?></option>
-        <?php endforeach; ?>
-    </select>
+    <div class="card-body">
+        <form action="/admin/tasks/store" method="post">
 
-    <p>Tags:</p>
-    <?php foreach ($tags as $tag): ?>
-        <label>
-            <input type="checkbox" name="tags[]" value="<?= $tag['id'] ?>">
-            <?= htmlspecialchars($tag['name']) ?>
-        </label><br>
-    <?php endforeach; ?>
+            <div class="mb-3">
+                <label class="form-label">Título</label>
+                <input type="text" class="form-control" name="title" required>
+            </div>
 
-    <button type="submit" class="btn">Salvar</button>
-</form>
+            <div class="mb-3">
+                <label class="form-label">Descrição</label>
+                <textarea name="description" class="form-control"></textarea>
+            </div>
+
+            <?= \App\Core\Csrf::input() ?>
+
+            <button class="btn btn-success">Criar</button>
+            <a href="/admin/tasks" class="btn btn-secondary">Cancelar</a>
+
+        </form>
+    </div>
+</div>
+
+<?php $this->stop() ?>
