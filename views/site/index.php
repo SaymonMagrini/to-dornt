@@ -1,5 +1,5 @@
 <?php
-$this->layout('layouts/auth', ['title' => 'Inicial']);
+$this->layout('layouts/site', ['title' => 'Inicial']);
 
 $this->start('body');
 ?>
