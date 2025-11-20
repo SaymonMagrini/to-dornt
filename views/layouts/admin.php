@@ -186,15 +186,18 @@ $auth = AuthService::user();
             <a class="nav-link" href="/admin/users" data-page="users">
                 <i class="bi bi-people"></i>
                 <span>Usuários</span>
-            </a>
-            <a class="nav-link" href="/admin/products" data-page="products">
+            </a> <a class="nav-link" href="/admin/tasks" data-page="products">
                 <i class="bi bi-box-seam"></i>
-                <span>Produtos</span>
+                <span>tasks</span>
+           
             </a>
             <a class="nav-link" href="/admin/categories" data-page="categories">
                 <i class="bi bi-box-seam"></i>
                 <span>Categorias</span>
             </a>
+              <a class="nav-link" href="/admin/tags" data-page="products">
+                <i class="bi bi-box-seam"></i>
+                <span>tags</span>
         </nav>
     </aside>
 
@@ -218,7 +221,7 @@ $auth = AuthService::user();
 
     <!-- Footer -->
     <footer class="footer" id="footer">
-        <p class="mb-0">&copy; 2025 Painel Administrativo. Todos os direitos reservados.</p>
+        <p class="mb-0">&copy; 2025 Painel Administrativo. Saymon & joelinton.</p>
     </footer>
 </div>
 

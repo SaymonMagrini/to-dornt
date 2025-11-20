@@ -105,7 +105,7 @@ switch ($routeInfo[0]) {
             '/admin',
         ];
 
-        // Se a rota começar com alguma dessas, exige login
+       
         foreach ($protectedRoutes as $prefix) {
             if (str_starts_with($uri, $prefix)) {
                 $redirect = AuthMiddleware::requireLogin();
