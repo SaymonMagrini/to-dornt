@@ -2,14 +2,12 @@
 
 <?php $this->start('body') ?>
 <div class="card shadow-sm" id="tableView">
-
     <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
         <h5 class="mb-0 fw-semibold">Lista de Tags</h5>
-        <a href="/admin/tags/create" class="btn btn-primary">
+        <a href="/admin/tags/create" class="btn btn-primary" id="btnNewTag">
             <i class="bi bi-plus-lg"></i> Nova Tag
         </a>
     </div>
-
     <div class="card-body p-0">
         <div class="table-responsive">
             <table class="table table-hover mb-0">
@@ -17,47 +15,53 @@
                 <tr>
                     <th>ID</th>
                     <th>Nome</th>
+                    <th>Descrição</th>
                     <th>Ações</th>
                 </tr>
                 </thead>
-
-                <tbody>
+                <tbody id="tableBody">
                 <?php foreach ($tags as $tag): ?>
                     <tr>
                         <td><?= $this->e($tag['id']) ?></td>
                         <td><?= $this->e($tag['name']) ?></td>
+                        <td><?= $this->e($tag['description']) ?></td>
                         <td>
                             <div class="action-buttons">
-                                <a class="btn btn-sm btn-secondary"
+                                <a class="btn btn-sm btn-secondary btn-edit"
                                    href="/admin/tags/show?id=<?= $this->e($tag['id']) ?>">
                                     <i class="bi bi-eye"></i> Ver
                                 </a>
-
-                                <a class="btn btn-sm btn-primary"
+                                <a class="btn btn-sm btn-primary btn-edit"
                                    href="/admin/tags/edit?id=<?= $this->e($tag['id']) ?>">
                                     <i class="bi bi-pencil"></i> Editar
                                 </a>
-
-                                <form action="/admin/tags/delete" method="post" class="d-inline"
-                                    onsubmit="return confirm('Excluir tag <?= $this->e($tag['name']) ?>?');">
-
+                                <form class="inline" action="/admin/tags/delete" method="post"
+                                      onsubmit="return confirm('Tem certeza que deseja excluir esta tag? (<?= $this->e($tag['name']) ?>)');">
                                     <input type="hidden" name="id" value="<?= $this->e($tag['id']) ?>">
                                     <?= \App\Core\Csrf::input() ?>
-
-                                    <button class="btn btn-sm btn-danger">
-                                        <i class="bi bi-trash"></i> Excluir
+                                    <button type="submit" class="btn btn-sm btn-danger">
+                                        <i class="bi bi-trash"></i>
+                                        Excluir
                                     </button>
-
                                 </form>
                             </div>
                         </td>
                     </tr>
                 <?php endforeach; ?>
                 </tbody>
-
             </table>
         </div>
     </div>
+</div>
+
+<div class="pagination" style="margin-top:12px;">
+    <?php for ($i = 1; $i <= $pages; $i++): ?>
+        <?php if ($i == $page): ?>
+            <strong>[<?= $i ?>]</strong>
+        <?php else: ?>
+            <a href="/admin/tags?page=<?= $i ?>"><?= $i ?></a>
+        <?php endif; ?>
+    <?php endfor; ?>
 </div>
 
 <?php $this->stop() ?>

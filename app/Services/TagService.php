@@ -3,21 +3,24 @@ namespace App\Services;
 
 use App\Models\Tag;
 
-class TagService {
-    public function validate(array $data): array {
+class TagService
+{
+    public function validate(array $data): array
+    {
         $errors = [];
         $name = trim($data['name'] ?? '');
     
-        if ($name === '') $errors['name'] = 'Nome é obrigatório';
+        if ($name === '')
+            $errors['name'] = 'Nome é obrigatório';
 
         return $errors;
     }
 
-    public function make(array $data): Tag {
-        $userId = trim($data['userId'] ?? '');
+    public function make(array $data): Tag
+    {
         $name = trim($data['name'] ?? '');
         $description = trim($data['description'] ?? '');
         $id = isset($data['id']) ? (int)$data['id'] : null;
-        return new Tag($id, $userId, $name, $description);
+        return new Tag($id, null, $name, $description);
     }
 }

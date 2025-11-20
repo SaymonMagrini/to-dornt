@@ -7,10 +7,11 @@ final class CreateTagsTable extends AbstractMigration
 {
     public function change(): void
     {
-        $this->table('tags')
-            ->addColumn('user_id', 'integer', ['signed' => false, 'null' => true])
+        $table = $this->table('tags');
+        $table
             ->addColumn('name', 'string', ['limit' => 32])
-            ->addForeignKey('user_id', 'users', 'id', ['delete' => 'CASCADE'])
+            ->addColumn('description', 'string', ['limit' => 256]) // <-- ADICIONADO
+            ->addTimestamps()
             ->create();
     }
 }
