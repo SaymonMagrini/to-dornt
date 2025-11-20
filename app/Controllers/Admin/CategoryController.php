@@ -40,7 +40,7 @@ class CategoryController
         return new Response($html);
     }
 
-    public function create(int $userId): Response
+    public function create(): Response
     {
         $html = $this->view->render('admin/categories/create', [
             'csrf' => Csrf::token(),
@@ -50,7 +50,7 @@ class CategoryController
         return new Response($html);
     }
 
-    public function store(Request $request, int $userId): Response
+    public function store(Request $request): Response
     {
         if (!Csrf::validate($request->request->get('_csrf'))) {
             return new Response('Token CSRF inválido', 419);
