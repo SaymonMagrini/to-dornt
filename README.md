@@ -2,8 +2,8 @@
 
 # Autores:
 
-Joelinton Siqueira (sistema de login)
-Saymon Kerlon Basso Magrini (sistema da lista de tarefas)
+Joelinton Siqueira 
+Saymon Kerlon Basso Magrini
 
 # instruções de uso
 
