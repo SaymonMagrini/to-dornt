@@ -1,25 +1,23 @@
-<?php $this->layout('layouts/admin', ['title' => 'Tarefas']) ?>
+<?php $this->layout('layouts/admin', ['title' => 'Tags']) ?>
 
-<h2>Lista de Tarefas</h2>
+<h2>Tags</h2>
 
-<a class="btn" href="/admin/tasks/create">Nova Tarefa</a>
+<a class="btn" href="/admin/tags/create">Nova Tag</a>
 
 <table class="table">
     <tr>
         <th>ID</th>
-        <th>Título</th>
-        <th>Status</th>
+        <th>Nome</th>
         <th>Ações</th>
     </tr>
 
-    <?php foreach ($tasks as $t): ?>
+    <?php foreach ($tags as $c): ?>
         <tr>
-            <td><?= $t['id'] ?></td>
-            <td><?= htmlspecialchars($t['title']) ?></td>
-            <td><?= htmlspecialchars($t['status']) ?></td>  
+            <td><?= $c['id'] ?></td>
+            <td><?= htmlspecialchars($c['name']) ?></td>
             <td>
-                <a class="btn" href="/admin/tasks/edit?id=<?= $t['id'] ?>">Editar</a>
-                <a class="btn danger" href="/admin/tasks/delete?id=<?= $t['id'] ?>">Excluir</a>
+                <a class="btn" href="/admin/tags/edit?id=<?= $c['id'] ?>">Editar</a>
+                <a class="btn danger" href="/admin/tags/delete?id=<?= $c['id'] ?>">Excluir</a>
             </td>
         </tr>
     <?php endforeach; ?>
