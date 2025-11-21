@@ -5,31 +5,32 @@ namespace App\Repositories;
 use App\Core\Database;
 use App\Models\Category;
 use PDO;
-use App\Repositories\TaskRepository;
-
 
 class CategoryRepository
 {
-        private TaskRepository $taskRepo;
+    private PDO $db;
 
-    public function countAll(): int
+    public function __construct()
     {
-             $userId = $taskRepo->userId ?? 0;
+        $this->db = Database::getConnection();
+        $this->db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_CLASS);
+        $this->db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_PROPS_LATE);
+    }
 
-        $stmt = Database::getConnection()->prepare(
+    public function countAll(int $userId): int
+    {
+        $stmt = $this->db->prepare(
             "SELECT COUNT(*) FROM categories WHERE user_id = ?"
         );
         $stmt->execute([$userId]);
         return (int)$stmt->fetchColumn();
     }
 
-    public function paginate(int $page, int $perPage): array
+    public function paginate(int $page, int $perPage, int $userId): array
     {
-             $userId = $taskRepo->userId ?? 0;
-
         $offset = ($page - 1) * $perPage;
 
-        $stmt = Database::getConnection()->prepare(
+        $stmt = $this->db->prepare(
             "SELECT * FROM categories 
              WHERE user_id = :user_id
              ORDER BY id DESC 
@@ -42,39 +43,43 @@ class CategoryRepository
 
         $stmt->execute();
 
-        return $stmt->fetchAll();
+        return $stmt->fetchAll(PDO::FETCH_CLASS, Category::class);
     }
 
-    public function find(int $id, int $userId): ?array
+    public function find(int $id, int $userId): ?Category
     {
-        $stmt = Database::getConnection()->prepare(
+        $stmt = $this->db->prepare(
             "SELECT * FROM categories WHERE id = ? AND user_id = ?"
         );
 
         $stmt->execute([$id, $userId]);
-        $row = $stmt->fetch();
+        
+        $stmt->setFetchMode(PDO::FETCH_CLASS, Category::class);
+        $category = $stmt->fetch();
 
-        return $row ?: null;
+        return $category instanceof Category ? $category : null;
     }
 
-    public function create(Category $category): int
+    public function create(Category $category, int $userId): int
     {
-        $stmt = Database::getConnection()->prepare(
+        $stmt = $this->db->prepare(
             "INSERT INTO categories (user_id, name, description) VALUES (?, ?, ?)"
         );
 
         $stmt->execute([
-            $category->userId,
+            $userId,
             $category->name,
             $category->description
         ]);
 
-        return (int)Database::getConnection()->lastInsertId();
+        return (int)$this->db->lastInsertId();
     }
 
-    public function update(Category $category): bool
+    public function update(Category $category, int $userId): bool
     {
-        $stmt = Database::getConnection()->prepare(
+        $category->userId = $userId;
+        
+        $stmt = $this->db->prepare(
             "UPDATE categories 
              SET name = ?, description = ?
              WHERE id = ? AND user_id = ?"
@@ -90,7 +95,7 @@ class CategoryRepository
 
     public function delete(int $id, int $userId): bool
     {
-        $stmt = Database::getConnection()->prepare(
+        $stmt = $this->db->prepare(
             "DELETE FROM categories WHERE id = ? AND user_id = ?"
         );
 
@@ -99,21 +104,19 @@ class CategoryRepository
 
     public function findAll(int $userId): array
     {
-        $stmt = Database::getConnection()->prepare(
+        $stmt = $this->db->prepare(
             "SELECT * FROM categories 
              WHERE user_id = ?
              ORDER BY id DESC"
         );
 
         $stmt->execute([$userId]);
-        return $stmt->fetchAll();
+        return $stmt->fetchAll(PDO::FETCH_CLASS, Category::class);
     }
 
-    public function getArray(): array
+    public function getArray(int $userId): array
     {
-                     $userId = $taskRepo->userId ?? 0;
-
-        $stmt = Database::getConnection()->prepare(
+        $stmt = $this->db->prepare(
             "SELECT id, name FROM categories 
              WHERE user_id = ?
              ORDER BY id DESC"

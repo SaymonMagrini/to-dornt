@@ -1,29 +1,72 @@
-<?php $this->layout('layouts/admin', ['title' => 'Nova Tarefa']) ?>
+<?php $this->layout('layouts/admin', ['title' => 'Nova Task']) ?>
 
 <?php $this->start('body') ?>
 
-<div class="card shadow-sm" id="formView">
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="mb-0">Nova Task</h4>
+    <a href="/admin/tasks" class="btn btn-secondary">← Voltar</a>
+</div>
 
-    <?php $this->insert('partials/admin/form/header', ['title' => 'Nova Tarefa']) ?>
+<?php if ($errors): ?>
+    <div class="alert alert-danger">
+        <ul class="mb-0">
+            <?php foreach ($errors as $error): ?>
+                <li><?= htmlspecialchars($error) ?></li>
+            <?php endforeach ?>
+        </ul>
+    </div>
+<?php endif ?>
 
+<div class="card shadow-sm">
     <div class="card-body">
-        <form action="/admin/tasks/store" method="post">
+        <form method="POST" action="/admin/tasks/store">
+            <!-- ESSA LINHA É OBRIGATÓRIA -->
+            <input type="hidden" name="_csrf" value="<?= $csrf ?>">
 
             <div class="mb-3">
-                <label class="form-label">Título</label>
-                <input type="text" class="form-control" name="title" required>
+                <label class="form-label">Título *</label>
+                <input type="text" name="title" class="form-control" value="<?= htmlspecialchars($old['title'] ?? '') ?>" required>
             </div>
 
             <div class="mb-3">
                 <label class="form-label">Descrição</label>
-                <textarea name="description" class="form-control"></textarea>
+                <textarea name="description" class="form-control" rows="4"><?= htmlspecialchars($old['description'] ?? '') ?></textarea>
             </div>
 
-            <?= \App\Core\Csrf::input() ?>
+            <div class="mb-3">
+                <label class="form-label">Categoria</label>
+                <select name="category_id" class="form-select">
+                    <option value="">Sem categoria</option>
+                    <?php foreach ($categories as $cat): ?>
+                        <option value="<?= $cat['id'] ?>" <?= ($old['category_id'] ?? '') == $cat['id'] ? 'selected' : '' ?>>
+                            <?= htmlspecialchars($cat['name']) ?>
+                        </option>
+                    <?php endforeach ?>
+                </select>
+            </div>
 
-            <button class="btn btn-success">Criar</button>
-            <a href="/admin/tasks" class="btn btn-secondary">Cancelar</a>
+            <div class="mb-3">
+                <label class="form-label">Prazo</label>
+                <input type="date" name="due_date" class="form-control" value="<?= $old['due_date'] ?? '' ?>">
+            </div>
 
+            <div class="mb-3">
+                <label class="form-label">Tags</label>
+                <select name="tag_ids[]" class="form-select" multiple size="5">
+                    <?php foreach ($tags as $tag): ?>
+                        <option value="<?= $tag['id'] ?>" <?= in_array($tag['id'], $old['tag_ids'] ?? []) ? 'selected' : '' ?>>
+                            <?= htmlspecialchars($tag['name']) ?>
+                        </option>
+                    <?php endforeach ?>
+                </select>
+                <div class="form-text">Segure Ctrl (ou Cmd) para selecionar várias</div>
+            </div>
+
+            <div class="text-end">
+                <button type="submit" class="btn btn-success">
+                    <i class="bi bi-check-lg"></i> Criar Task
+                </button>
+            </div>
         </form>
     </div>
 </div>

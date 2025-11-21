@@ -29,7 +29,6 @@ class TaskController
         $this->tagRepo = new TagRepository();
     }
 
-    /** Obtém o ID do usuário logado */
     private function getUserId(): int
     {
         return (int) ($_SESSION['user_id'] ?? 0);
@@ -46,11 +45,12 @@ class TaskController
         $tasks = $this->repo->paginate($page, $perPage, $userId);
         $pages = (int) ceil($total / $perPage);
 
-        $categories = $this->categoryRepo->findAll($userId);
-        $tags = $this->tagRepo->findAll($userId);
-
         return new Response(
-            $this->view->render('admin/tasks/index', compact('tasks', 'page', 'pages', 'categories', 'tags'))
+            $this->view->render('admin/tasks/index', [
+                'tasks' => $tasks,
+                'page'  => $page,
+                'pages' => $pages,
+            ])
         );
     }
 
@@ -78,7 +78,7 @@ class TaskController
         }
 
         $data = $request->request->all();
-        $data['tag_ids'] = $request->request->all('tag_ids');
+        $data['tag_ids'] = $request->request->all('tag_ids') ?? [];
 
         $errors = $this->service->validate($data);
         if ($errors) {
@@ -96,14 +96,14 @@ class TaskController
         $task = $this->service->make($data);
         $id = $this->repo->create($task, $userId);
 
-        return new RedirectResponse('/admin/tasks/show?id=' . $id);
+        $_SESSION['success'] = 'Task criada com sucesso!';
+        return new RedirectResponse("/admin/tasks/show?id=$id");
     }
 
     public function show(Request $request): Response
     {
         $userId = $this->getUserId();
-
-        $id = (int) $request->query->get('id');
+        $id = (int)$request->query->get('id');
         $task = $this->repo->find($id, $userId);
 
         if (!$task) {
@@ -118,8 +118,7 @@ class TaskController
     public function edit(Request $request): Response
     {
         $userId = $this->getUserId();
-
-        $id = (int) $request->query->get('id');
+        $id = (int)$request->query->get('id');
         $task = $this->repo->find($id, $userId);
 
         if (!$task) {
@@ -146,17 +145,19 @@ class TaskController
         }
 
         $data = $request->request->all();
-        $data['tag_ids'] = $request->request->all('tag_ids');
+        $data['tag_ids'] = $request->request->all('tag_ids') ?? [];
 
         $errors = $this->service->validate($data);
         if ($errors) {
+            $task = $this->repo->find((int)$data['id'], $userId);
             return new Response(
                 $this->view->render('admin/tasks/edit', [
                     'csrf' => Csrf::token(),
-                    'task' => $data,
+                    'task' => $task,
                     'categories' => $this->categoryRepo->findAll($userId),
                     'tags' => $this->tagRepo->findAll($userId),
-                    'errors' => $errors
+                    'errors' => $errors,
+                    'old' => $data
                 ]),
                 422
             );
@@ -165,7 +166,8 @@ class TaskController
         $task = $this->service->make($data);
         $this->repo->update($task, $userId);
 
-        return new RedirectResponse('/admin/tasks/show?id=' . $task->id);
+        $_SESSION['success'] = 'Task atualizada com sucesso!';
+        return new RedirectResponse("/admin/tasks/show?id=" . $task->id);
     }
 
     public function delete(Request $request): Response
@@ -176,10 +178,10 @@ class TaskController
             return new Response('Token CSRF inválido', 419);
         }
 
-        $id = (int) $request->request->get('id');
-
+        $id = (int)$request->request->get('id');
         if ($id > 0) {
             $this->repo->delete($id, $userId);
+            $_SESSION['success'] = 'Task excluída com sucesso!';
         }
 
         return new RedirectResponse('/admin/tasks');
