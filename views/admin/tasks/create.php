@@ -25,7 +25,7 @@
 
             <div class="mb-3">
                 <label class="form-label">Título *</label>
-                <input type="text" name="title" class="form-control" value="<?= htmlspecialchars($old['title'] ?? '') ?>" required>
+                <input type="text" name="name" class="form-control" value="<?= htmlspecialchars($old['name'] ?? '') ?>" required>
             </div>
 
             <div class="mb-3">

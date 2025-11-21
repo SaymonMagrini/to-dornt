@@ -9,32 +9,31 @@ use PDO;
 class TaskRepository
 {
 
-    public function countAll(int $userId): int
+    public function countAll(): int
     {
         $stmt = Database::getConnection()->prepare(
-            "SELECT COUNT(*) FROM tasks WHERE user_id = ?"
+            "SELECT COUNT(*) FROM tasks"
         );
-        $stmt->execute([$userId]);
-        return (int)$stmt->fetchColumn();
+        $stmt->execute([]);
+        return (int) $stmt->fetchColumn();
     }
 
 
-    public function paginate(int $page, int $perPage, int $userId): array
+    public function paginate(int $page, int $perPage): array
     {
         $offset = ($page - 1) * $perPage;
 
         $stmt = Database::getConnection()->prepare(
-            "SELECT * FROM tasks WHERE user_id = ? ORDER BY id DESC LIMIT ? OFFSET ?"
+            "SELECT * FROM tasks ORDER BY id DESC LIMIT ? OFFSET ?"
         );
 
-        $stmt->bindValue(1, $userId, PDO::PARAM_INT);
-        $stmt->bindValue(2, $perPage, PDO::PARAM_INT);
-        $stmt->bindValue(3, $offset, PDO::PARAM_INT);
+        $stmt->bindValue(1, $perPage, PDO::PARAM_INT);
+        $stmt->bindValue(2, $offset, PDO::PARAM_INT);
         $stmt->execute();
 
         $tasks = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        
+
         foreach ($tasks as &$task) {
             $task['tags'] = $this->getTags($task['id']);
         }
@@ -42,13 +41,31 @@ class TaskRepository
         return $tasks;
     }
 
-  
-    public function find(int $id, int $userId): ?array
+    private function syncTags(int $taskId, array $tagIds): void
+    {
+
+        Database::getConnection()
+            ->prepare("DELETE FROM task_tags WHERE task_id = ?")
+            ->execute([$taskId]);
+
+
+        if (!empty($tagIds)) {
+            $stmt = Database::getConnection()->prepare(
+                "INSERT INTO task_tags (task_id, tag_id) VALUES (?, ?)"
+            );
+            foreach ($tagIds as $tagId) {
+                $stmt->execute([$taskId, $tagId]);
+            }
+        }
+    }
+
+
+    public function find(int $id): ?array
     {
         $stmt = Database::getConnection()->prepare(
-            "SELECT * FROM tasks WHERE id = ? AND user_id = ? LIMIT 1"
+            "SELECT * FROM tasks WHERE id = ? LIMIT 1"
         );
-        $stmt->execute([$id, $userId]);
+        $stmt->execute([$id]);
 
         $task = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -60,47 +77,46 @@ class TaskRepository
     }
 
     /** Cria nova task */
-    public function create(Task $task, int $userId): int
+    public function create(Task $task): int
     {
         $stmt = Database::getConnection()->prepare("
-            INSERT INTO tasks (title, description, category_id, due_date, done, user_id, created_at)
-            VALUES (?, ?, ?, ?, ?, ?, NOW())
+            INSERT INTO tasks (name, description, category_id, due_date, done, created_at)
+            VALUES (?, ?, ?, ?, ?, NOW())
         ");
 
         $stmt->execute([
-            $task->title,
+            $task->name,
             $task->description ?? null,
             $task->category_id ?? null,
             $task->due_date ?? null,
-            $task->done ?? 0,
-            $userId
+            (int) $task->done
         ]);
 
-        $taskId = (int)Database::getConnection()->lastInsertId();
+        $taskId = (int) Database::getConnection()->lastInsertId();
 
-     
+
         $this->syncTags($taskId, $task->tag_ids ?? []);
 
         return $taskId;
     }
 
-  
-    public function update(Task $task, int $userId): bool
+
+    public function update(Task $task): bool
     {
         $stmt = Database::getConnection()->prepare("
             UPDATE tasks
-            SET title = ?, description = ?, category_id = ?, due_date = ?, done = ?
+            SET name = ?, description = ?, category_id = ?, due_date = ?, done = ?
             WHERE id = ? AND user_id = ?
         ");
 
         $result = $stmt->execute([
-            $task->title,
+            $task->name,
             $task->description ?? null,
             $task->category_id ?? null,
             $task->due_date ?? null,
             $task->done ?? 0,
             $task->id,
-            $userId
+
         ]);
 
         $this->syncTags($task->id, $task->tag_ids ?? []);
@@ -109,18 +125,18 @@ class TaskRepository
     }
 
     /** Deleta task e suas relações */
-    public function delete(int $id, int $userId): bool
+    public function delete(int $id): bool
     {
         // Remove relações com tags primeiro
         Database::getConnection()
-            ->prepare("DELETE FROM task_tag WHERE task_id = ?")
+            ->prepare("DELETE FROM task_tags WHERE task_id = ?")
             ->execute([$id]);
 
         $stmt = Database::getConnection()->prepare(
             "DELETE FROM tasks WHERE id = ? AND user_id = ?"
         );
 
-        return $stmt->execute([$id, $userId]);
+        return $stmt->execute([$id]);
     }
 
 
@@ -129,7 +145,7 @@ class TaskRepository
         $stmt = Database::getConnection()->prepare("
             SELECT t.id, t.name
             FROM tags t
-            INNER JOIN task_tag tt ON tt.tag_id = t.id
+            INNER JOIN task_tags tt ON tt.tag_id = t.id
             WHERE tt.task_id = ?
         ");
 
@@ -137,22 +153,4 @@ class TaskRepository
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-   
-    private function syncTags(int $taskId, array $tagIds): void
-    {
-    
-        Database::getConnection()
-            ->prepare("DELETE FROM task_tag WHERE task_id = ?")
-            ->execute([$taskId]);
-
-       
-        if (!empty($tagIds)) {
-            $stmt = Database::getConnection()->prepare(
-                "INSERT INTO task_tag (task_id, tag_id) VALUES (?, ?)"
-            );
-            foreach ($tagIds as $tagId) {
-                $stmt->execute([$taskId, $tagId]);
-            }
-        }
-    }
 }

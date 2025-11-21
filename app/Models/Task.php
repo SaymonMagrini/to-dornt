@@ -5,7 +5,7 @@ class Task
 {
     public ?int $id;
     public int $category_id;
-    public string $title;
+    public string $name;
     public array $tag_ids;
     public ?string $description;
     public ?string $due_to;
@@ -15,7 +15,7 @@ class Task
     public function __construct(
         ?int $id,
         int $category_id,
-        string $title,
+        string $name,
         array $tag_ids = [],
         ?string $description = null,
         ?string $due_to = null,
@@ -24,7 +24,7 @@ class Task
     ) {
         $this->id = $id;
         $this->category_id = $category_id;
-        $this->title = $title;
+        $this->name = $name;
         $this->tag_ids = $tag_ids;
         $this->description = $description;
         $this->due_to = $due_to;

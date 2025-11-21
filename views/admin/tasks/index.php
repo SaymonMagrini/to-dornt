@@ -2,9 +2,9 @@
 
 <?php $this->start('body') ?>
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h4 class="mb-0">Lista de Tasks</h4>
-    <a href="/admin/tasks/create" class="btn btn-primary">+ Nova Task</a>
+    <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
+        <h5 class="mb-0 fw-semibold">Lista de Tarefas</h5>
+    <a href="/admin/tasks/create" class="btn btn-primary">+ Nova Tarefa</a>
 </div>
 
 <?php if (isset($_SESSION['success'])): ?>
@@ -20,7 +20,7 @@
             <thead class="table-light">
                 <tr>
                     <th>ID</th>
-                    <th>Título</th>
+                    <th>Nome</th>
                     <th>Descrição</th>
                     <th>Categoria</th>
                     <th>Prazo</th>
@@ -32,7 +32,7 @@
                 <?php foreach ($tasks as $task): ?>
                     <tr>
                         <td><?= $task['id'] ?></td>
-                        <td><?= htmlspecialchars($task['title'] ?? $task['name'] ?? '') ?></td>
+                        <td><?= htmlspecialchars($task['name'] ?? $task['name'] ?? '') ?></td>
                         <td><?= htmlspecialchars($task['description'] ?? '') ?></td>
                         <td>
                             <?php if (!empty($task['category_id'])): ?>
