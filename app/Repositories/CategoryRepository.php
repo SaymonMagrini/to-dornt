@@ -6,131 +6,62 @@ use App\Core\Database;
 use App\Models\Category;
 use PDO;
 
+
 class CategoryRepository
 {
-    private PDO $db;
 
-    public function __construct()
+    public function countAll(): int
     {
-        $this->db = Database::getConnection();
-        $this->db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_CLASS);
-        $this->db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_PROPS_LATE);
-    }
-
-    public function countAll(int $userId): int
-    {
-        $stmt = $this->db->prepare(
-            "SELECT COUNT(*) FROM categories WHERE user_id = ?"
-        );
-        $stmt->execute([$userId]);
+        $stmt = Database::getConnection()->query("SELECT COUNT(*) FROM categories");
         return (int)$stmt->fetchColumn();
     }
 
-    public function paginate(int $page, int $perPage, int $userId): array
+    public function paginate(int $page, int $perPage): array
     {
         $offset = ($page - 1) * $perPage;
-
-        $stmt = $this->db->prepare(
-            "SELECT * FROM categories 
-             WHERE user_id = :user_id
-             ORDER BY id DESC 
-             LIMIT :limit OFFSET :offset"
+        $stmt = Database::getConnection()->prepare(
+            "SELECT * FROM categories ORDER BY id DESC LIMIT :limit OFFSET :offset"
         );
-
-        $stmt->bindValue(':user_id', $userId, PDO::PARAM_INT);
         $stmt->bindValue(':limit', $perPage, PDO::PARAM_INT);
         $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
-
         $stmt->execute();
-
-        return $stmt->fetchAll(PDO::FETCH_CLASS, Category::class);
+        return $stmt->fetchAll();
     }
 
-    public function find(int $id, int $userId): ?Category
+    public function find(int $id): ?array
     {
-        $stmt = $this->db->prepare(
-            "SELECT * FROM categories WHERE id = ? AND user_id = ?"
-        );
-
-        $stmt->execute([$id, $userId]);
-        
-        $stmt->setFetchMode(PDO::FETCH_CLASS, Category::class);
-        $category = $stmt->fetch();
-
-        return $category instanceof Category ? $category : null;
+        $stmt = Database::getConnection()->prepare("SELECT * FROM categories WHERE id = ?");
+        $stmt->execute([$id]);
+        $row = $stmt->fetch();
+        return $row ?: null;
     }
 
-    public function create(Category $category, int $userId): int
+    public function create(Category $category): int
     {
-        $stmt = $this->db->prepare(
-            "INSERT INTO categories (user_id, name, description) VALUES (?, ?, ?)"
+        $stmt = Database::getConnection()->prepare(
+            "INSERT INTO categories (name, description) VALUES (?, ?)"
         );
-
-        $stmt->execute([
-            $userId,
-            $category->name,
-            $category->description
-        ]);
-
-        return (int)$this->db->lastInsertId();
+        $stmt->execute([$category->name, $category->description]);
+        return (int)Database::getConnection()->lastInsertId();
     }
 
-    public function update(Category $category, int $userId): bool
+    public function update(Category $category): bool
     {
-        $category->userId = $userId;
-        
-        $stmt = $this->db->prepare(
-            "UPDATE categories 
-             SET name = ?, description = ?
-             WHERE id = ? AND user_id = ?"
+        $stmt = Database::getConnection()->prepare(
+            "UPDATE categories SET name = ?, description = ? WHERE id = ?"
         );
-
-        return $stmt->execute([
-            $category->name,
-            $category->description,
-            $category->id,
-            $category->userId
-        ]);
+        return $stmt->execute([$category->name, $category->description, $category->id]);
     }
 
-    public function delete(int $id, int $userId): bool
+    public function delete(int $id): bool
     {
-        $stmt = $this->db->prepare(
-            "DELETE FROM categories WHERE id = ? AND user_id = ?"
-        );
-
-        return $stmt->execute([$id, $userId]);
+        $stmt = Database::getConnection()->prepare("DELETE FROM categories WHERE id = ?");
+        return $stmt->execute([$id]);
     }
 
-    public function findAll(int $userId): array
+    public function findAll(): array
     {
-        $stmt = $this->db->prepare(
-            "SELECT * FROM categories 
-             WHERE user_id = ?
-             ORDER BY id DESC"
-        );
-
-        $stmt->execute([$userId]);
-        return $stmt->fetchAll(PDO::FETCH_CLASS, Category::class);
-    }
-
-    public function getArray(int $userId): array
-    {
-        $stmt = $this->db->prepare(
-            "SELECT id, name FROM categories 
-             WHERE user_id = ?
-             ORDER BY id DESC"
-        );
-
-        $stmt->execute([$userId]);
-
-        $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        $return = [];
-        foreach ($categories as $category) {
-            $return[$category['id']] = $category['name'];
-        }
-
-        return $return;
+        $stmt = Database::getConnection()->query("SELECT * FROM categories ORDER BY id DESC");
+        return $stmt->fetchAll();
     }
 }
