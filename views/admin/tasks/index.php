@@ -2,8 +2,8 @@
 
 <?php $this->start('body') ?>
 
-    <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
-        <h5 class="mb-0 fw-semibold">Lista de Tarefas</h5>
+<div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
+    <h5 class="mb-0 fw-semibold">Lista de Tarefas</h5>
     <a href="/admin/tasks/create" class="btn btn-primary">+ Nova Tarefa</a>
 </div>
 
@@ -23,6 +23,7 @@
                     <th>Nome</th>
                     <th>Descrição</th>
                     <th>Categoria</th>
+                    <th>Tags</th>
                     <th>Prazo</th>
                     <th>Status</th>
                     <th>Ações</th>
@@ -39,6 +40,16 @@
                                 <span class="text-primary">CAT <?= $task['category_id'] ?></span>
                             <?php else: ?>—<?php endif ?>
                         </td>
+                        <td>
+                            <?php if (!empty($task['tags'])): ?>
+                                <?php foreach ($task['tags'] as $tag): ?>
+                                    <span class="badge bg-info text-dark"><?= htmlspecialchars($tag['name']) ?></span>
+                                <?php endforeach ?>
+                            <?php else: ?>
+                                —
+                            <?php endif ?>
+                        </td>
+
                         <td>
                             <?php if (!empty($task['due_date'])): ?>
                                 <?= (new DateTime($task['due_date']))->format('d/m/Y') ?>

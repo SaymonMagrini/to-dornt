@@ -30,3 +30,9 @@ Saymon Kerlon Basso Magrini
 | Linux: vendor/bin/phinx migrate
 
 | Windows: php vendor/bin/phinx migrate
+
+- Criar primeiro usuário
+
+Acesse: localhost:8001/auth/create
+- E-mail: teste@teste.com
+- Senha: teste123

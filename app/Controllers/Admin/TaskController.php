@@ -29,26 +29,18 @@ class TaskController
         $this->tagRepo = new TagRepository();
     }
 
-    public function index(Request $request): Response
-    {
+public function index(): Response
+{
+    $tasks = $this->repo->findAll();
 
-        $page = max(1, (int)$request->query->get('page', 1));
-        $perPage = 10;
+    return new Response(
+        $this->view->render('admin/tasks/index', [
+            'tasks' => $tasks,
+        ])
+    );
+}
 
-        $total = $this->repo->countAll();
-        $tasks = $this->repo->paginate($page, $perPage);
-        $pages = (int) ceil($total / $perPage);
-
-        return new Response(
-            $this->view->render('admin/tasks/index', [
-                'tasks' => $tasks,
-                'page'  => $page,
-                'pages' => $pages,
-            ])
-        );
-    }
-
-    public function create(Request $request): Response
+    public function create(): Response
     {
 
         return new Response(
@@ -62,35 +54,40 @@ class TaskController
         );
     }
 
-    public function store(Request $request): Response
-    {
-
-        if (!Csrf::validate($request->request->get('_csrf'))) {
-            return new Response('Token CSRF inválido', 419);
-        }
-
-        $data = $request->request->all();
-        $data['tag_ids'] = $request->request->all('tag_ids') ?? [];
-
-        $errors = $this->service->validate($data);
-        if ($errors) {
-            return new Response(
-                $this->view->render('admin/tasks/create', [
-                    'csrf' => Csrf::token(),
-                    'categories' => $this->categoryRepo->findAll(),
-                    'tags' => $this->tagRepo->findAll(),
-                    'errors' => $errors,
-                    'old' => $data
-                ]), 422
-            );
-        }
-
-        $task = $this->service->make($data);
-        $id = $this->repo->create($task);
-
-        $_SESSION['success'] = 'Task criada com sucesso!';
-        return new RedirectResponse("/admin/tasks/show?id=$id");
+public function store(Request $request): Response
+{
+    if (!Csrf::validate($request->request->get('_csrf'))) {
+        return new Response('Token CSRF inválido', 419);
     }
+
+    $data = $request->request->all();
+
+    $data['tag_ids'] = $request->request->all('tag_ids') ?? [];
+
+    $data['due_date'] = !empty($data['due_date'])
+        ? date('Y-m-d', strtotime($data['due_date']))
+        : null;
+
+    $errors = $this->service->validate($data);
+    if ($errors) {
+        return new Response(
+            $this->view->render('admin/tasks/create', [
+                'csrf' => Csrf::token(),
+                'categories' => $this->categoryRepo->findAll(),
+                'tags' => $this->tagRepo->findAll(),
+                'errors' => $errors,
+                'old' => $data
+            ]), 422
+        );
+    }
+
+    $task = $this->service->make($data);
+
+    $id = $this->repo->create($task);
+
+    $_SESSION['success'] = 'Tarefa criada com sucesso!';
+    return new RedirectResponse("/admin/tasks/show?id=$id");
+}
 
     public function show(Request $request): Response
     {
@@ -154,7 +151,7 @@ class TaskController
         $task = $this->service->make($data);
         $this->repo->update($task);
 
-        $_SESSION['success'] = 'Task atualizada com sucesso!';
+        $_SESSION['success'] = 'Tarefa atualizada com sucesso!';
         return new RedirectResponse("/admin/tasks/show?id=" . $task->id);
     }
 
@@ -168,7 +165,7 @@ class TaskController
         $id = (int)$request->request->get('id');
         if ($id > 0) {
             $this->repo->delete($id);
-            $_SESSION['success'] = 'Task excluída com sucesso!';
+            $_SESSION['success'] = 'Tarefa excluída com sucesso!';
         }
 
         return new RedirectResponse('/admin/tasks');

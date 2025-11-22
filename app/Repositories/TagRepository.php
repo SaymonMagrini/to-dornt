@@ -62,4 +62,18 @@ class TagRepository
         $stmt = Database::getConnection()->query("SELECT * FROM tags ORDER BY id DESC");
         return $stmt->fetchAll();
     }
+
+    public function findByTaskId(int $taskId): array
+{
+    $stmt = Database:: getConnection() ->prepare("
+        SELECT t.*
+        FROM tags t
+        INNER JOIN task_tags tt ON tt.tag_id = t.id
+        WHERE tt.task_id = ?
+    ");
+
+    $stmt->execute([$taskId]);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
 }

@@ -75,6 +75,21 @@ class TaskRepository
 
         return $task ?: null;
     }
+    public function findAll(): array
+{
+    $stmt = Database::getConnection()->query(
+        "SELECT * FROM tasks ORDER BY created_at DESC"
+    );
+
+    $tasks = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    foreach ($tasks as &$task) {
+        $task['tags'] = $this->getTags($task['id']);
+    }
+
+    return $tasks;
+}
+
 
     /** Cria nova task */
     public function create(Task $task): int

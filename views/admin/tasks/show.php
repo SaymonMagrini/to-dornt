@@ -10,8 +10,15 @@
 
         <h4><?= $this->e($task->title) ?></h4>
 
-        <p><strong>Status:</strong> <?= $task->status ?></p>
-        <p><strong>Descrição:</strong></p>
+        <div class="mb-3">
+            <label class="form-label">Status:</label>
+            <input class="form-control" value="<?= $this->e($task['done']) ?>" readonly>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Descrição:</label>
+            <input class="form-control" value="<?= $this->e($task['description']) ?>" readonly>
+        </div>
 
         <p><?= nl2br($this->e($task->description)) ?></p>
 
