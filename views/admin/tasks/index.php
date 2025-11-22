@@ -37,8 +37,13 @@
                         <td><?= htmlspecialchars($task['description'] ?? '') ?></td>
                         <td>
                             <?php if (!empty($task['category_id'])): ?>
-                                <span class="text-primary">CAT <?= $task['category_id'] ?></span>
-                            <?php else: ?>—<?php endif ?>
+                                <span class="fw-semibold text-primary">
+                                    <?= htmlspecialchars($task['category_name']) ?>
+                                </span>
+                            <?php else: ?>
+                                —
+                            <?php endif ?>
+
                         </td>
                         <td>
                             <?php if (!empty($task['tags'])): ?>
