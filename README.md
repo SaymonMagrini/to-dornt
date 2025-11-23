@@ -2,8 +2,7 @@
 
 # Autores:
 
-Joelinton Siqueira 
-Saymon Kerlon Basso Magrini
+Joelinton Siqueira & Saymon Kerlon Basso Magrini
 
 # instruções de uso
 
