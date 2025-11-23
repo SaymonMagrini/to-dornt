@@ -89,4 +89,15 @@
     </div>
 </div>
 
+<div class="pagination" style="margin-top:12px;">
+    <?php for ($i = 1; $i <= $pages; $i++): ?>
+        <?php if ($i == $page): ?>
+            <strong>[<?= $i ?>]</strong>
+        <?php else: ?>
+            <a href="/admin/tags?page=<?= $i ?>"><?= $i ?></a>
+        <?php endif; ?>
+    <?php endfor; ?>
+</div>
+
+
 <?php $this->stop() ?>
