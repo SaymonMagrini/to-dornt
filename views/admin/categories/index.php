@@ -14,47 +14,47 @@
         <div class="table-responsive">
             <table class="table table-hover mb-0">
                 <thead class="table-light">
-                <tr>
-                    <th>ID</th>
-                    <th>Nome</th>
-                    <th>Descrição</th>
-                    <th>Ações</th>
-                </tr>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nome</th>
+                        <th>Descrição</th>
+                        <th>Ações</th>
+                    </tr>
                 </thead>
 
                 <tbody>
-                <?php foreach ($categories as $category): ?>
-                    <tr>
-                        <td><?= $this->e($category['id']) ?></td>
-                        <td><?= $this->e($category['name']) ?></td>
-                        <td><?= $this->e($category['description']) ?></td>
-                        <td>
-                            <div class="action-buttons">
-                                <a class="btn btn-sm btn-secondary"
-                                   href="/admin/categories/show?id=<?= $this->e($category['id']) ?>">
-                                    <i class="bi bi-eye"></i> Ver
-                                </a>
+                    <?php foreach ($categories as $category): ?>
+                        <tr>
+                            <td><?= $this->e($category['id']) ?></td>
+                            <td><?= $this->e($category['name']) ?></td>
+                            <td><?= $this->e($category['description']) ?></td>
+                            <td>
+                                <div class="action-buttons">
+                                    <a class="btn btn-sm btn-secondary"
+                                        href="/admin/categories/show?id=<?= $this->e($category['id']) ?>">
+                                        <i class="bi bi-eye"></i> Ver
+                                    </a>
 
-                                <a class="btn btn-sm btn-primary"
-                                   href="/admin/categories/edit?id=<?= $this->e($category['id']) ?>">
-                                    <i class="bi bi-pencil"></i> Editar
-                                </a>
+                                    <a class="btn btn-sm btn-primary"
+                                        href="/admin/categories/edit?id=<?= $this->e($category['id']) ?>">
+                                        <i class="bi bi-pencil"></i> Editar
+                                    </a>
 
-                                <form action="/admin/categories/delete" method="post" class="d-inline"
-                                    onsubmit="return confirm('Excluir categoria <?= $this->e($category['name']) ?>?');">
+                                    <form action="/admin/categories/delete" method="post" class="d-inline"
+                                        onsubmit="return confirm('Excluir categoria <?= $this->e($category['name']) ?>?');">
 
-                                    <input type="hidden" name="id" value="<?= $this->e($category['id']) ?>">
-                                    <?= \App\Core\Csrf::input() ?>
+                                        <input type="hidden" name="id" value="<?= $this->e($category['id']) ?>">
+                                        <?= \App\Core\Csrf::input() ?>
 
-                                    <button class="btn btn-sm btn-danger">
-                                        <i class="bi bi-trash"></i> Excluir
-                                    </button>
+                                        <button class="btn btn-sm btn-danger">
+                                            <i class="bi bi-trash"></i> Excluir
+                                        </button>
 
-                                </form>
-                            </div>
-                        </td>
-                    </tr>
-                <?php endforeach; ?>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
                 </tbody>
 
             </table>

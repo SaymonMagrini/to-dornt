@@ -13,7 +13,7 @@ class CategoryRepository
     public function countAll(): int
     {
         $stmt = Database::getConnection()->query("SELECT COUNT(*) FROM categories");
-        return (int)$stmt->fetchColumn();
+        return (int) $stmt->fetchColumn();
     }
 
     public function paginate(int $page, int $perPage): array
@@ -42,7 +42,7 @@ class CategoryRepository
             "INSERT INTO categories (name, description) VALUES (?, ?)"
         );
         $stmt->execute([$category->name, $category->description]);
-        return (int)Database::getConnection()->lastInsertId();
+        return (int) Database::getConnection()->lastInsertId();
     }
 
     public function update(Category $category): bool

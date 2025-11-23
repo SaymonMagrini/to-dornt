@@ -29,16 +29,17 @@ class AuthService
     public function attempt(string $email, string $password): bool
     {
         $row = $this->repo->findByEmail(strtolower(trim($email)));
-        if (!$row || !password_verify($password, $row['password_hash'])) return false;
+        if (!$row || !password_verify($password, $row['password_hash']))
+            return false;
 
         $algo = defined('PASSWORD_ARGON2ID') ? PASSWORD_ARGON2ID : PASSWORD_BCRYPT;
         if (password_needs_rehash($row['password_hash'], $algo)) {
             $newHash = self::hashPassword($password);
-            $this->repo->updatePasswordHash((int)$row['id'], $newHash);
+            $this->repo->updatePasswordHash((int) $row['id'], $newHash);
             $row['password_hash'] = $newHash;
         }
 
-        $this->login((int)$row['id'], $row['name'], $row['email']);
+        $this->login((int) $row['id'], $row['name'], $row['email']);
         return true;
     }
 
@@ -68,7 +69,8 @@ class AuthService
     public function changePassword(int $userId, string $currentPassword, string $newPassword): bool
     {
         $row = $this->repo->find($userId);
-        if (!$row || !password_verify($currentPassword, $row['password_hash'])) return false;
+        if (!$row || !password_verify($currentPassword, $row['password_hash']))
+            return false;
 
         $newHash = self::hashPassword($newPassword);
         return $this->repo->updatePasswordHash($userId, $newHash);

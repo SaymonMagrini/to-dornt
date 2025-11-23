@@ -8,48 +8,57 @@
             <i class="bi bi-plus-lg"></i> Novo Usuário
         </a>
     </div>
+
+    <?php if (isset($_SESSION['success'])): ?>
+        <div class="alert alert-success rounded mb-4">
+            <?= htmlspecialchars($_SESSION['success']) ?>
+        </div>
+        <?php unset($_SESSION['success']); ?>
+    <?php endif ?>
+
+
     <div class="card-body p-0">
         <div class="table-responsive">
             <table class="table table-hover mb-0">
                 <thead class="table-light">
-                <tr>
-                    <th>ID</th>
-                    <th>Nome</th>
-                    <th>E-mail</th>
-                    <th>Criado em</th>
-                    <th>Ações</th>
-                </tr>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nome</th>
+                        <th>E-mail</th>
+                        <th>Criado em</th>
+                        <th>Ações</th>
+                    </tr>
                 </thead>
                 <tbody id="tableBody">
-                <?php foreach ($users as $user): ?>
-                    <tr>
-                        <td><?= $this->e($user['id']) ?></td>
-                        <td><?= $this->e($user['name']) ?></td>
-                        <td><?= $this->e($user['email']) ?></td>
-                        <td><?= $this->e($user['created_at'] ?? '') ?></td>
-                        <td>
-                            <div class="action-buttons">
-                                <a class="btn btn-sm btn-secondary btn-edit"
-                                   href="/admin/users/show?id=<?= $this->e($user['id']) ?>">
-                                    <i class="bi bi-eye"></i> Ver
-                                </a>
-                                <a class="btn btn-sm btn-primary btn-edit"
-                                   href="/admin/users/edit?id=<?= $this->e($user['id']) ?>">
-                                    <i class="bi bi-pencil"></i> Editar
-                                </a>
-                                <form class="inline" action="/admin/users/delete" method="post"
-                                      onsubmit="return confirm('Tem certeza que deseja excluir este usuário? (<?= $this->e($user['name']) ?>)');">
-                                    <input type="hidden" name="id" value="<?= $this->e($user['id']) ?>">
-                                    <?= \App\Core\Csrf::input() ?>
-                                    <button type="submit" class="btn btn-sm btn-danger">
-                                        <i class="bi bi-trash"></i>
-                                        Excluir
-                                    </button>
-                                </form>
-                            </div>
-                        </td>
-                    </tr>
-                <?php endforeach; ?>
+                    <?php foreach ($users as $user): ?>
+                        <tr>
+                            <td><?= $this->e($user['id']) ?></td>
+                            <td><?= $this->e($user['name']) ?></td>
+                            <td><?= $this->e($user['email']) ?></td>
+                            <td><?= $this->e($user['created_at'] ?? '') ?></td>
+                            <td>
+                                <div class="action-buttons">
+                                    <a class="btn btn-sm btn-secondary btn-edit"
+                                        href="/admin/users/show?id=<?= $this->e($user['id']) ?>">
+                                        <i class="bi bi-eye"></i> Ver
+                                    </a>
+                                    <a class="btn btn-sm btn-primary btn-edit"
+                                        href="/admin/users/edit?id=<?= $this->e($user['id']) ?>">
+                                        <i class="bi bi-pencil"></i> Editar
+                                    </a>
+                                    <form class="inline" action="/admin/users/delete" method="post"
+                                        onsubmit="return confirm('Tem certeza que deseja excluir este usuário? (<?= $this->e($user['name']) ?>)');">
+                                        <input type="hidden" name="id" value="<?= $this->e($user['id']) ?>">
+                                        <?= \App\Core\Csrf::input() ?>
+                                        <button type="submit" class="btn btn-sm btn-danger">
+                                            <i class="bi bi-trash"></i>
+                                            Excluir
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
                 </tbody>
             </table>
         </div>

@@ -18,7 +18,8 @@ class AuthController
 
     private AuthService $auth;
 
-    public function __construct(){
+    public function __construct()
+    {
         $this->view = new View();
         $this->auth = new AuthService();
     }
@@ -31,9 +32,10 @@ class AuthController
 
     public function login(Request $req): Response
     {
-        if (!Csrf::validate($req->request->get('_csrf'))) return new Response('CSRF inválido', 419);
-        $email = (string)$req->request->get('email', '');
-        $password = (string)$req->request->get('password', '');
+        if (!Csrf::validate($req->request->get('_csrf')))
+            return new Response('CSRF inválido', 419);
+        $email = (string) $req->request->get('email', '');
+        $password = (string) $req->request->get('password', '');
 
         if (!$this->auth->attempt($email, $password)) {
             Flash::push('danger', 'Credenciais inválidas');

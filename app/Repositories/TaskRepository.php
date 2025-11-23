@@ -149,7 +149,7 @@ class TaskRepository
             ");
 
             foreach ($tagIds as $tagId) {
-                $stmt->execute([$taskId, (int)$tagId]);
+                $stmt->execute([$taskId, (int) $tagId]);
             }
         }
     }

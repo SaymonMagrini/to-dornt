@@ -12,7 +12,8 @@ class Csrf
 
     public static function ensureSession(): void
     {
-        if (session_status() !== PHP_SESSION_ACTIVE) session_start();
+        if (session_status() !== PHP_SESSION_ACTIVE)
+            session_start();
     }
 
     public static function input(): string
@@ -23,7 +24,8 @@ class Csrf
     public static function token(): string
     {
         self::ensureSession();
-        if (empty($_SESSION['_csrf'])) $_SESSION['_csrf'] = bin2hex(random_bytes(32));
+        if (empty($_SESSION['_csrf']))
+            $_SESSION['_csrf'] = bin2hex(random_bytes(32));
         return $_SESSION['_csrf'];
     }
 }

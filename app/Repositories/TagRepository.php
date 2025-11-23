@@ -11,7 +11,7 @@ class TagRepository
     public function countAll(): int
     {
         $stmt = Database::getConnection()->query("SELECT COUNT(*) FROM tags");
-        return (int)$stmt->fetchColumn();
+        return (int) $stmt->fetchColumn();
     }
 
     public function paginate(int $page, int $perPage): array
@@ -40,7 +40,7 @@ class TagRepository
             "INSERT INTO tags (name, description) VALUES (?, ?)"
         );
         $stmt->execute([$tag->name, $tag->description]);
-        return (int)Database::getConnection()->lastInsertId();
+        return (int) Database::getConnection()->lastInsertId();
     }
 
     public function update(Tag $tag): bool
@@ -64,16 +64,16 @@ class TagRepository
     }
 
     public function findByTaskId(int $taskId): array
-{
-    $stmt = Database:: getConnection() ->prepare("
+    {
+        $stmt = Database::getConnection()->prepare("
         SELECT t.*
         FROM tags t
         INNER JOIN task_tags tt ON tt.tag_id = t.id
         WHERE tt.task_id = ?
     ");
 
-    $stmt->execute([$taskId]);
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
-}
+        $stmt->execute([$taskId]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 
 }

@@ -12,42 +12,42 @@
         <div class="table-responsive">
             <table class="table table-hover mb-0">
                 <thead class="table-light">
-                <tr>
-                    <th>ID</th>
-                    <th>Nome</th>
-                    <th>Descrição</th>
-                    <th>Ações</th>
-                </tr>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nome</th>
+                        <th>Descrição</th>
+                        <th>Ações</th>
+                    </tr>
                 </thead>
                 <tbody id="tableBody">
-                <?php foreach ($tags as $tag): ?>
-                    <tr>
-                        <td><?= $this->e($tag['id']) ?></td>
-                        <td><?= $this->e($tag['name']) ?></td>
-                        <td><?= $this->e($tag['description']) ?></td>
-                        <td>
-                            <div class="action-buttons">
-                                <a class="btn btn-sm btn-secondary btn-edit"
-                                   href="/admin/tags/show?id=<?= $this->e($tag['id']) ?>">
-                                    <i class="bi bi-eye"></i> Ver
-                                </a>
-                                <a class="btn btn-sm btn-primary btn-edit"
-                                   href="/admin/tags/edit?id=<?= $this->e($tag['id']) ?>">
-                                    <i class="bi bi-pencil"></i> Editar
-                                </a>
-                                <form class="inline" action="/admin/tags/delete" method="post"
-                                      onsubmit="return confirm('Tem certeza que deseja excluir esta tag? (<?= $this->e($tag['name']) ?>)');">
-                                    <input type="hidden" name="id" value="<?= $this->e($tag['id']) ?>">
-                                    <?= \App\Core\Csrf::input() ?>
-                                    <button type="submit" class="btn btn-sm btn-danger">
-                                        <i class="bi bi-trash"></i>
-                                        Excluir
-                                    </button>
-                                </form>
-                            </div>
-                        </td>
-                    </tr>
-                <?php endforeach; ?>
+                    <?php foreach ($tags as $tag): ?>
+                        <tr>
+                            <td><?= $this->e($tag['id']) ?></td>
+                            <td><?= $this->e($tag['name']) ?></td>
+                            <td><?= $this->e($tag['description']) ?></td>
+                            <td>
+                                <div class="action-buttons">
+                                    <a class="btn btn-sm btn-secondary btn-edit"
+                                        href="/admin/tags/show?id=<?= $this->e($tag['id']) ?>">
+                                        <i class="bi bi-eye"></i> Ver
+                                    </a>
+                                    <a class="btn btn-sm btn-primary btn-edit"
+                                        href="/admin/tags/edit?id=<?= $this->e($tag['id']) ?>">
+                                        <i class="bi bi-pencil"></i> Editar
+                                    </a>
+                                    <form class="inline" action="/admin/tags/delete" method="post"
+                                        onsubmit="return confirm('Tem certeza que deseja excluir esta tag? (<?= $this->e($tag['name']) ?>)');">
+                                        <input type="hidden" name="id" value="<?= $this->e($tag['id']) ?>">
+                                        <?= \App\Core\Csrf::input() ?>
+                                        <button type="submit" class="btn btn-sm btn-danger">
+                                            <i class="bi bi-trash"></i>
+                                            Excluir
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
                 </tbody>
             </table>
         </div>

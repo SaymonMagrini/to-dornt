@@ -10,7 +10,7 @@ class UserRepository
     public function countAll(): int
     {
         $stmt = Database::getConnection()->query("SELECT COUNT(*) FROM users");
-        return (int)$stmt->fetchColumn();
+        return (int) $stmt->fetchColumn();
     }
 
     public function paginate(int $page, int $perPage): array
@@ -35,7 +35,7 @@ class UserRepository
     {
         $stmt = Database::getConnection()->prepare("INSERT INTO users (name, email, password_hash) VALUES (?, ?, ?)");
         $stmt->execute([$u->name, $u->email, $u->password_hash]);
-        return (int)Database::getConnection()->lastInsertId();
+        return (int) Database::getConnection()->lastInsertId();
     }
 
     public function update(User $u): bool

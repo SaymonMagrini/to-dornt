@@ -9,8 +9,7 @@
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <label class="form-label">Nome</label>
-                    <input type="text" name="name" class="form-control"
-                           value="<?= $this->e($old['name'] ?? '') ?>">
+                    <input type="text" name="name" class="form-control" value="<?= $this->e($old['name'] ?? '') ?>">
                     <?php if (!empty($errors['name'])): ?>
                         <div class="text-danger"><?= $this->e($errors['name']) ?></div><?php endif; ?>
                 </div>
@@ -18,7 +17,7 @@
                 <div class="col-md-6 mb-3">
                     <label class="form-label">Descrição</label>
                     <input type="text" name="description" class="form-control"
-                           value="<?= $this->e($old['description'] ?? '') ?>">
+                        value="<?= $this->e($old['description'] ?? '') ?>">
                     <?php if (!empty($errors['description'])): ?>
                         <div class="text-danger"><?= $this->e($errors['description']) ?></div><?php endif; ?>
                 </div>

@@ -6,20 +6,20 @@
     <div class="card-body">
         <form method="post" action="/admin/users/update" enctype="multipart/form-data" class="">
             <input type="hidden" name="id" value="<?= $this->e($user['id']) ?>">
-            
+
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <label for="name" class="form-label">Nome</label>
                     <input type="text" class="form-control" id="name" name="name" placeholder="Digite o nome"
-                           value="<?= $this->e(($old['name'] ?? $user['name'])) ?>" required>
+                        value="<?= $this->e(($old['name'] ?? $user['name'])) ?>" required>
                     <?php if (!empty($errors['name'])): ?>
                         <div class="text-danger"><?= $this->e($errors['name']) ?></div>
                     <?php endif; ?>
                 </div>
                 <div class="col-md-6 mb-3">
                     <label for="email" class="form-label">E-mail</label>
-                    <input type="email" class="form-control" id="email" name="email"
-                           placeholder="Digite o e-mail" value="<?= $this->e(($old['email'] ?? $user['email'])) ?>" required>
+                    <input type="email" class="form-control" id="email" name="email" placeholder="Digite o e-mail"
+                        value="<?= $this->e(($old['email'] ?? $user['email'])) ?>" required>
                     <?php if (!empty($errors['email'])): ?>
                         <div class="text-danger"><?= $this->e($errors['email']) ?></div>
                     <?php endif; ?>
@@ -29,7 +29,7 @@
                 <div class="col-md-6 mb-3">
                     <label for="password" class="form-label">Senha</label>
                     <input type="password" class="form-control" id="password" name="password"
-                           placeholder="Digite a nova senha" required>
+                        placeholder="Digite a nova senha" required>
                     <?php if (!empty($errors['password'])): ?>
                         <div class="text-danger"><?= $this->e($errors['password']) ?></div>
                     <?php endif; ?>

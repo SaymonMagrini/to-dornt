@@ -43,13 +43,13 @@ class TaskService
     public function make(array $data): Task
     {
         return new Task(
-            isset($data['id']) ? (int)$data['id'] : null,
-            (int)($data['category_id'] ?? 0),
+            isset($data['id']) ? (int) $data['id'] : null,
+            (int) ($data['category_id'] ?? 0),
             trim($data['name'] ?? ''),
             $data['tag_ids'] ?? [],
             trim($data['description'] ?? '') ?: null,
             $data['due_date'] ?? null,
-            isset($data['done']) ? (bool)$data['done'] : false,
+            isset($data['done']) ? (bool) $data['done'] : false,
             $data['created_at'] ?? null
         );
     }

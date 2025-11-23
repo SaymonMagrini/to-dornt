@@ -18,13 +18,12 @@
                 </div>
                 <div class="mb-3">
                     <label class="form-label"><strong>E-mail:</strong></label>
-                    <input type="text" class="form-control"
-                    <input type="text" class="form-control" value="<?= $this->e($user['email']) ?>" readonly>
+                    <input type="text" class="form-control" <input type="text" class="form-control"
+                        value="<?= $this->e($user['email']) ?>" readonly>
                 </div>
                 <div class="mb-3">
                     <label class="form-label"><strong>Criado em:</strong></label>
-                    <input type="text" class="form-control" value="<?= $this->e($user['created_at'] ?? '') ?>"
-                           readonly>
+                    <input type="text" class="form-control" value="<?= $this->e($user['created_at'] ?? '') ?>" readonly>
                 </div>
                 <div class="text-end">
                     <a href="javascript:history.back()" class="btn btn-secondary">Voltar</a>

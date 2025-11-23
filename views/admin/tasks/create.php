@@ -24,12 +24,14 @@
 
             <div class="mb-3">
                 <label class="form-label">Título *</label>
-                <input type="text" name="name" class="form-control" value="<?= htmlspecialchars($old['name'] ?? '') ?>" required>
+                <input type="text" name="name" class="form-control" value="<?= htmlspecialchars($old['name'] ?? '') ?>"
+                    required>
             </div>
 
             <div class="mb-3">
                 <label class="form-label">Descrição</label>
-                <textarea name="description" class="form-control" rows="4"><?= htmlspecialchars($old['description'] ?? '') ?></textarea>
+                <textarea name="description" class="form-control"
+                    rows="4"><?= htmlspecialchars($old['description'] ?? '') ?></textarea>
             </div>
 
             <div class="mb-3">

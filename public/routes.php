@@ -103,7 +103,7 @@ switch ($routeInfo[0]) {
             '/admin',
         ];
 
-       
+
         foreach ($protectedRoutes as $prefix) {
             if (str_starts_with($uri, $prefix)) {
                 $redirect = AuthMiddleware::requireLogin();

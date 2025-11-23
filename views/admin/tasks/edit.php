@@ -22,7 +22,7 @@
             <div class="mb-3">
                 <label class="form-label">Título *</label>
                 <input type="text" name="name" class="form-control"
-                       value="<?= $this->e($old['name'] ?? $task['name']) ?>" required>
+                    value="<?= $this->e($old['name'] ?? $task['name']) ?>" required>
             </div>
 
             <div class="mb-3">
@@ -37,8 +37,7 @@
                 <select name="category_id" class="form-select">
                     <option value="">Sem categoria</option>
                     <?php foreach ($categories as $cat): ?>
-                        <option value="<?= $cat['id'] ?>"
-                            <?= ($old['category_id'] ?? $task['category_id']) == $cat['id'] ? 'selected' : '' ?>>
+                        <option value="<?= $cat['id'] ?>" <?= ($old['category_id'] ?? $task['category_id']) == $cat['id'] ? 'selected' : '' ?>>
                             <?= $this->e($cat['name']) ?>
                         </option>
                     <?php endforeach ?>
@@ -48,20 +47,20 @@
             <div class="mb-3">
                 <label class="form-label">Prazo</label>
                 <input type="date" name="due_date" class="form-control"
-                       value="<?= $old['due_date'] ?? $task['due_date'] ?? '' ?>">
+                    value="<?= $old['due_date'] ?? $task['due_date'] ?? '' ?>">
             </div>
 
             <div class="mb-3">
-    <label class="form-label">Tags</label>
-    <select name="tag_ids[]" class="form-select" multiple>
-        <?php foreach ($tags as $tag): ?>
-            <option value="<?= $tag['id'] ?>" <?= in_array($tag['id'], $selectedTagIds) ? 'selected' : '' ?>>
-                <?= $this->e($tag['name']) ?>
-            </option>
-        <?php endforeach ?>
-    </select>
-    <div class="form-text">Segure Ctrl para selecionar várias</div>
-</div>
+                <label class="form-label">Tags</label>
+                <select name="tag_ids[]" class="form-select" multiple>
+                    <?php foreach ($tags as $tag): ?>
+                        <option value="<?= $tag['id'] ?>" <?= in_array($tag['id'], $selectedTagIds) ? 'selected' : '' ?>>
+                            <?= $this->e($tag['name']) ?>
+                        </option>
+                    <?php endforeach ?>
+                </select>
+                <div class="form-text">Segure Ctrl para selecionar várias</div>
+            </div>
             <div class="mb-3">
                 <label class="form-label">Status</label>
                 <select name="done" class="form-select">

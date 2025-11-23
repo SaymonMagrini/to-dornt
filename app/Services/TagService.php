@@ -9,7 +9,7 @@ class TagService
     {
         $errors = [];
         $name = trim($data['name'] ?? '');
-    
+
         if ($name === '')
             $errors['name'] = 'Nome é obrigatório';
 
@@ -20,7 +20,7 @@ class TagService
     {
         $name = trim($data['name'] ?? '');
         $description = trim($data['description'] ?? '');
-        $id = isset($data['id']) ? (int)$data['id'] : null;
+        $id = isset($data['id']) ? (int) $data['id'] : null;
         return new Tag($id, null, $name, $description);
     }
 }

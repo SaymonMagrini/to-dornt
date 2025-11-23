@@ -10,5 +10,4 @@ if (file_exists($root . '/.env')) {
     $dotenv = Dotenv::createImmutable($root);
     $dotenv->load();
 }
-
 require_once("routes.php");

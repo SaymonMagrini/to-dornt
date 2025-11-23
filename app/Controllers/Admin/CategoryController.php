@@ -29,12 +29,12 @@ class CategoryController
 
     public function index(Request $request): Response
     {
-        $page = max(1, (int)$request->query->get('page', 1));
+        $page = max(1, (int) $request->query->get('page', 1));
         $perPage = 5;
 
         $total = $this->repo->countAll();
-        $categories = $this->repo->paginate( $page, $perPage);
-        $pages = (int)ceil($total / $perPage);
+        $categories = $this->repo->paginate($page, $perPage);
+        $pages = (int) ceil($total / $perPage);
 
         $html = $this->view->render('admin/categories/index', compact('categories', 'page', 'pages'));
         return new Response($html);
@@ -77,7 +77,7 @@ class CategoryController
 
     public function show(Request $request): Response
     {
-        $id = (int)$request->query->get('id', 0);
+        $id = (int) $request->query->get('id', 0);
         $category = $this->repo->find($id);
 
         if (!$category) {
@@ -90,7 +90,7 @@ class CategoryController
 
     public function edit(Request $request): Response
     {
-        $id = (int)$request->query->get('id', 0);
+        $id = (int) $request->query->get('id', 0);
         $category = $this->repo->find($id);
 
         if (!$category) {
@@ -116,7 +116,7 @@ class CategoryController
         $errors = $this->service->validate($data);
 
         if ($errors) {
-            $category = $this->repo->find((int)$data['id']);
+            $category = $this->repo->find((int) $data['id']);
 
             $html = $this->view->render('admin/categories/edit', [
                 'category' => array_merge($category, $data),
@@ -141,7 +141,7 @@ class CategoryController
 
     public function delete(Request $request): Response
     {
-        $categoryId = (int)$request->request->get('id', 0);
+        $categoryId = (int) $request->request->get('id', 0);
 
         if (!Csrf::validate($request->request->get('_csrf'))) {
             return new Response('Token CSRF inválido', 419);

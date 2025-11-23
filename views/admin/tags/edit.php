@@ -10,8 +10,8 @@
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <label for="name" class="form-label">Nome</label>
-                    <input type="text" class="form-control" id="name" name="name"
-                           value="<?= $this->e($tag['name']) ?>" required>
+                    <input type="text" class="form-control" id="name" name="name" value="<?= $this->e($tag['name']) ?>"
+                        required>
                     <?php if (!empty($errors['name'])): ?>
                         <div class="text-danger"><?= $this->e($errors['name']) ?></div>
                     <?php endif; ?>
@@ -19,7 +19,7 @@
                 <div class="col-md-6 mb-3">
                     <label for="description" class="form-label">Descrição</label>
                     <input type="text" class="form-control" id="description" name="description"
-                           value="<?= $this->e($tag['description']) ?>">
+                        value="<?= $this->e($tag['description']) ?>">
                     <?php if (!empty($errors['description'])): ?>
                         <div class="text-danger"><?= $this->e($errors['description']) ?></div>
                     <?php endif; ?>
