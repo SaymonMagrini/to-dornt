@@ -8,24 +8,24 @@ use PDO;
 
 class TaskRepository
 {
-
     public function countAll(): int
     {
-        $stmt = Database::getConnection()->prepare(
-            "SELECT COUNT(*) FROM tasks"
-        );
-        $stmt->execute([]);
-        return (int) $stmt->fetchColumn();
+        return (int) Database::getConnection()
+            ->query("SELECT COUNT(*) FROM tasks")
+            ->fetchColumn();
     }
-
 
     public function paginate(int $page, int $perPage): array
     {
         $offset = ($page - 1) * $perPage;
 
-        $stmt = Database::getConnection()->prepare(
-            "SELECT * FROM tasks ORDER BY id DESC LIMIT ? OFFSET ?"
-        );
+        $stmt = Database::getConnection()->prepare("
+            SELECT t.*, c.name AS category_name
+            FROM tasks t
+            LEFT JOIN categories c ON c.id = t.category_id
+            ORDER BY t.id DESC
+            LIMIT ? OFFSET ?
+        ");
 
         $stmt->bindValue(1, $perPage, PDO::PARAM_INT);
         $stmt->bindValue(2, $offset, PDO::PARAM_INT);
@@ -33,38 +33,22 @@ class TaskRepository
 
         $tasks = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-
-        foreach ($tasks as &$task) {
-            $task['tags'] = $this->getTags($task['id']);
+        foreach ($tasks as &$t) {
+            $t['tags'] = $this->getTags($t['id']);
         }
 
         return $tasks;
     }
 
-    private function syncTags(int $taskId, array $tagIds): void
-    {
-
-        Database::getConnection()
-            ->prepare("DELETE FROM task_tags WHERE task_id = ?")
-            ->execute([$taskId]);
-
-
-        if (!empty($tagIds)) {
-            $stmt = Database::getConnection()->prepare(
-                "INSERT INTO task_tags (task_id, tag_id) VALUES (?, ?)"
-            );
-            foreach ($tagIds as $tagId) {
-                $stmt->execute([$taskId, $tagId]);
-            }
-        }
-    }
-
-
     public function find(int $id): ?array
     {
-        $stmt = Database::getConnection()->prepare(
-            "SELECT * FROM tasks WHERE id = ? LIMIT 1"
-        );
+        $stmt = Database::getConnection()->prepare("
+            SELECT t.*, c.name AS category_name
+            FROM tasks t
+            LEFT JOIN categories c ON c.id = t.category_id
+            WHERE t.id = ?
+            LIMIT 1
+        ");
         $stmt->execute([$id]);
 
         $task = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -75,14 +59,15 @@ class TaskRepository
 
         return $task ?: null;
     }
+
     public function findAll(): array
     {
         $stmt = Database::getConnection()->query("
-        SELECT t.*, c.name AS category_name
-        FROM tasks t
-        LEFT JOIN categories c ON c.id = t.category_id
-        ORDER BY t.id DESC
-    ");
+            SELECT t.*, c.name AS category_name
+            FROM tasks t
+            LEFT JOIN categories c ON c.id = t.category_id
+            ORDER BY t.id DESC
+        ");
 
         $tasks = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -93,8 +78,6 @@ class TaskRepository
         return $tasks;
     }
 
-
-    /** Cria nova task */
     public function create(Task $task): int
     {
         $stmt = Database::getConnection()->prepare("
@@ -104,59 +87,72 @@ class TaskRepository
 
         $stmt->execute([
             $task->name,
-            $task->description ?? null,
-            $task->category_id ?? null,
-            $task->due_date ?? null,
-            (int) $task->done
+            $task->description,
+            $task->category_id,
+            $task->due_date,
+            $task->done ? 1 : 0
         ]);
 
-        $taskId = (int) Database::getConnection()->lastInsertId();
+        $id = (int) Database::getConnection()->lastInsertId();
+        $this->syncTags($id, $task->tag_ids);
 
-
-        $this->syncTags($taskId, $task->tag_ids ?? []);
-
-        return $taskId;
+        return $id;
     }
-
 
     public function update(Task $task): bool
     {
         $stmt = Database::getConnection()->prepare("
             UPDATE tasks
-            SET name = ?, description = ?, category_id = ?, due_date = ?, done = ?
-            WHERE id = ? AND user_id = ?
+            SET name = ?, 
+                description = ?, 
+                category_id = ?, 
+                due_date = ?, 
+                done = ?
+            WHERE id = ?
         ");
 
         $result = $stmt->execute([
             $task->name,
-            $task->description ?? null,
-            $task->category_id ?? null,
-            $task->due_date ?? null,
-            $task->done ?? 0,
-            $task->id,
-
+            $task->description,
+            $task->category_id,
+            $task->due_date,
+            $task->done ? 1 : 0,
+            $task->id
         ]);
 
-        $this->syncTags($task->id, $task->tag_ids ?? []);
+        $this->syncTags($task->id, $task->tag_ids);
 
         return $result;
     }
 
-    /** Deleta task e suas relações */
     public function delete(int $id): bool
     {
-        // Remove relações com tags primeiro
         Database::getConnection()
             ->prepare("DELETE FROM task_tags WHERE task_id = ?")
             ->execute([$id]);
 
-        $stmt = Database::getConnection()->prepare(
-            "DELETE FROM tasks WHERE id = ? AND user_id = ?"
-        );
+        $stmt = Database::getConnection()->prepare("DELETE FROM tasks WHERE id = ?");
+        $stmt->execute([$id]);
 
-        return $stmt->execute([$id]);
+        return $stmt->rowCount() > 0;
     }
 
+    private function syncTags(int $taskId, array $tagIds): void
+    {
+        Database::getConnection()
+            ->prepare("DELETE FROM task_tags WHERE task_id = ?")
+            ->execute([$taskId]);
+
+        if (!empty($tagIds)) {
+            $stmt = Database::getConnection()->prepare("
+                INSERT INTO task_tags (task_id, tag_id) VALUES (?, ?)
+            ");
+
+            foreach ($tagIds as $tagId) {
+                $stmt->execute([$taskId, (int)$tagId]);
+            }
+        }
+    }
 
     private function getTags(int $taskId): array
     {
@@ -170,5 +166,4 @@ class TaskRepository
         $stmt->execute([$taskId]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Services;
 
 use App\Models\Task;
@@ -9,8 +10,8 @@ class TaskService
     {
         $errors = [];
 
-        $name = trim($data['name'] ?? '');
-        if ($name === '') {
+        $title = trim($data['name'] ?? '');
+        if ($title === '') {
             $errors['name'] = 'Título é obrigatório';
         }
 
@@ -39,27 +40,17 @@ class TaskService
         return $errors;
     }
 
-public function make(array $data): Task
-{
-    $id = isset($data['id']) ? (int) $data['id'] : null;
-    $category_id = (int) ($data['category_id'] ?? 0);
-    $tag_ids = $data['tag_ids'] ?? [];
-    $name = trim($data['name'] ?? '');
-    $description = trim($data['description'] ?? '') ?: null;
-
-    $due_date = $data['due_date'] ?? null;
-    $done = !empty($data['done']) ? 1 : 0;
-    $created_at = '';  
-
-    return new Task(
-        $id,
-        $category_id,
-        $name,
-        $tag_ids,
-        $description,
-        $due_date,
-        (bool) $done,
-        $created_at
-    );
-}
+    public function make(array $data): Task
+    {
+        return new Task(
+            isset($data['id']) ? (int)$data['id'] : null,
+            (int)($data['category_id'] ?? 0),
+            trim($data['name'] ?? ''),
+            $data['tag_ids'] ?? [],
+            trim($data['description'] ?? '') ?: null,
+            $data['due_date'] ?? null,
+            isset($data['done']) ? (bool)$data['done'] : false,
+            $data['created_at'] ?? null
+        );
+    }
 }

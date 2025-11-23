@@ -4,7 +4,7 @@
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h4 class="mb-0">Nova Task</h4>
-    <a href="/admin/tasks" class="btn btn-secondary">← Voltar</a>
+    <a href="/admin/tasks" class="btn btn-secondary">Voltar</a>
 </div>
 
 <?php if ($errors): ?>
@@ -20,19 +20,16 @@
 <div class="card shadow-sm">
     <div class="card-body">
         <form method="POST" action="/admin/tasks/store">
-            <!-- ESSA LINHA É OBRIGATÓRIA -->
             <input type="hidden" name="_csrf" value="<?= $csrf ?>">
 
             <div class="mb-3">
                 <label class="form-label">Título *</label>
-                <input type="text" name="name" class="form-control" value="<?= htmlspecialchars($old['name'] ?? '') ?>"
-                    required>
+                <input type="text" name="name" class="form-control" value="<?= htmlspecialchars($old['name'] ?? '') ?>" required>
             </div>
 
             <div class="mb-3">
                 <label class="form-label">Descrição</label>
-                <textarea name="description" class="form-control"
-                    rows="4"><?= htmlspecialchars($old['description'] ?? '') ?></textarea>
+                <textarea name="description" class="form-control" rows="4"><?= htmlspecialchars($old['description'] ?? '') ?></textarea>
             </div>
 
             <div class="mb-3">
@@ -56,7 +53,7 @@
                 <label class="form-label">Tags</label>
                 <select name="tag_ids[]" class="form-select" multiple size="5">
                     <?php foreach ($tags as $tag): ?>
-                        <option value="<?= $tag['id'] ?>" <?= in_array($tag['id'], $old['tag_ids'] ?? []) ? 'selected' : '' ?>>
+                        <option value="<?= $tag['id'] ?>" <?= in_array($tag['id'], $selectedTagIds) ? 'selected' : '' ?>>
                             <?= htmlspecialchars($tag['name']) ?>
                         </option>
                     <?php endforeach ?>
@@ -66,7 +63,7 @@
 
             <div class="text-end">
                 <button type="submit" class="btn btn-success">
-                    <i class="bi bi-check-lg"></i> Criar Task
+                    Criar Task
                 </button>
             </div>
         </form>

@@ -33,10 +33,10 @@
                                    href="/admin/users/show?id=<?= $this->e($user['id']) ?>">
                                     <i class="bi bi-eye"></i> Ver
                                 </a>
-<!--                                <a class="btn btn-sm btn-primary btn-edit"-->
-<!--                                   href="/admin/users/edit?id=--><?php //= $this->e($user['id']) ?><!--">-->
-<!--                                    <i class="bi bi-pencil"></i> Editar-->
-<!--                                </a>-->
+                                <a class="btn btn-sm btn-primary btn-edit"
+                                   href="/admin/users/edit?id=<?= $this->e($user['id']) ?>">
+                                    <i class="bi bi-pencil"></i> Editar
+                                </a>
                                 <form class="inline" action="/admin/users/delete" method="post"
                                       onsubmit="return confirm('Tem certeza que deseja excluir este usuário? (<?= $this->e($user['name']) ?>)');">
                                     <input type="hidden" name="id" value="<?= $this->e($user['id']) ?>">

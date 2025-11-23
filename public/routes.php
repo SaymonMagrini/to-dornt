@@ -63,16 +63,14 @@ $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $rou
             $categories->addRoute('POST', '/delete', [TagController::class, 'delete']);
         });
 
-
-
         // Usuários
         $group->addGroup('/users', function (FastRoute\RouteCollector $users) {
             $users->addRoute('GET', '', [UserController::class, 'index']);
             $users->addRoute('GET', '/create', [UserController::class, 'create']);
             $users->addRoute('POST', '/store', [UserController::class, 'store']);
             $users->addRoute('GET', '/show', [UserController::class, 'show']);
-            //            $users->addRoute('GET', '/edit', [UserController::class, 'edit']);
-//            $users->addRoute('POST', '/update', [UserController::class, 'update']);
+            $users->addRoute('GET', '/edit', [UserController::class, 'edit']);
+            $users->addRoute('POST', '/update', [UserController::class, 'update']);
             $users->addRoute('POST', '/delete', [UserController::class, 'delete']);
         });
     });
