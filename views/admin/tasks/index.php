@@ -94,7 +94,7 @@
         <?php if ($i == $page): ?>
             <strong>[<?= $i ?>]</strong>
         <?php else: ?>
-            <a href="/admin/tags?page=<?= $i ?>"><?= $i ?></a>
+            <a href="/admin/tasks?page=<?= $i ?>"><?= $i ?></a>
         <?php endif; ?>
     <?php endfor; ?>
 </div>

@@ -15,30 +15,19 @@ class TaskRepository
             ->fetchColumn();
     }
 
+
     public function paginate(int $page, int $perPage): array
     {
         $offset = ($page - 1) * $perPage;
-
-        $stmt = Database::getConnection()->prepare("
-            SELECT t.*, c.name AS category_name
-            FROM tasks t
-            LEFT JOIN categories c ON c.id = t.category_id
-            ORDER BY t.id DESC
-            LIMIT ? OFFSET ?
-        ");
-
-        $stmt->bindValue(1, $perPage, PDO::PARAM_INT);
-        $stmt->bindValue(2, $offset, PDO::PARAM_INT);
+        $stmt = Database::getConnection()->prepare(
+            "SELECT * FROM tasks ORDER BY id DESC LIMIT :limit OFFSET :offset"
+        );
+        $stmt->bindValue(':limit', $perPage, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
         $stmt->execute();
-
-        $tasks = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        foreach ($tasks as &$t) {
-            $t['tags'] = $this->getTags($t['id']);
-        }
-
-        return $tasks;
+        return $stmt->fetchAll();
     }
+    
 
     public function find(int $id): ?array
     {

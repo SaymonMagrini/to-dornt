@@ -29,13 +29,18 @@ class TaskController
         $this->tagRepo = new TagRepository();
     }
 
-    public function index(): Response
+    public function index(Request $request): Response
     {
-        return new Response(
-            $this->view->render('admin/tasks/index', [
-                'tasks' => $this->repo->findAll()
-            ])
-        );
+        $page = max(1, (int) $request->query->get('page', 1));
+        $perPage = 5;
+        $total = $this->repo->countAll();
+        $tasks = $this->repo->paginate($page, $perPage);
+        $pages = (int) ceil($total / $perPage);
+
+        $html = $this->view->render('admin/tasks/index', compact('tasks', 'page', 'pages'));
+        return new Response($html);
+
+
     }
 
     public function create(): Response
